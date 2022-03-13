@@ -22,7 +22,9 @@ tk_def = {
 
 #id defintions for ids that will be converted to keywords
 tk_ids = [
-    "abs"
+    "abs",
+    "let",
+    "in"
 ]
 
 class Token:
@@ -51,8 +53,9 @@ class Token:
             case "/": return {"DIV": str_token}
             case "(": return {"LBRAC": str_token}
             case ")": return {"RBRAC": str_token}
+            case "=": return {"EQUAL": str_token}
             case _:
-                raise Exception(f"Invalid string-rep token found at offset {offset}: <{str_token}>")
+                raise Exception(f"Lexer Error: Invalid string-rep token found at offset {offset}: <{str_token}>")
 
     '''
     Takes the current token being analyzed, and the next token, then updates its accordingly
@@ -124,7 +127,7 @@ class Token:
                 
 
     '''
-    Converts a string fully to a list of tokens that can be used in the AST
+    Converts a string fully to a list of tokens that can be used in the CST
 
     (final product of tokenizer)
     '''
