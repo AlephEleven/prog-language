@@ -31,14 +31,14 @@ def concrete_defs(conc_list, prec=-1):
             return [{"EXP": [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + concrete_defs(t, prec)
         #<Exp> := <Exp> <BOp> <Exp> (with PEMDAS precedence)
         case [{"EXP": e1}, {"OP": op}, {"EXP": e2}, *t], _ if prec > 1:
-            print(f"{op} \t {prec}")
+            #print(f"{op} \t {prec}")
             match op, prec:
                 case {"MULT": _} | {"DIV": _}, 2:
                     return [{"EXP": [{"EXP": e1}, {"OP": op}, {"EXP": e2}]}] + concrete_defs(t, prec)
                 case {"PLUS": _} | {"MINUS": _}, 3:
                     return [{"EXP": [{"EXP": e1}, {"OP": op}, {"EXP": e2}]}] + concrete_defs(t, prec)
                 case _, _:
-                    return [{"EXP": e1}, {"OP": op}, {"EXP": e2}]+concrete_defs(t, prec)
+                    return [{"EXP": e1}]+concrete_defs([{"OP": op}, {"EXP": e2}] + t, prec)
         #<Any> := <Any>
         case [h, *t], _:
             return [h]+concrete_defs(t, prec)
@@ -46,7 +46,7 @@ def concrete_defs(conc_list, prec=-1):
 
 '''
 Generates a Concrete Syntax Tree, loops through concrete definitions, and continously pattern matches
-from left-to-right until there are no changes when given to the defintions twice
+from left-to-right until there are no changes when given to the defintions twice (or as set alarm)
 
 Raises exception if unable to make CST (list)
 '''
@@ -68,7 +68,7 @@ def gen_CST(conc_list, alarm=2):
 
 tst = "4+(3*(4/2))/2+(1)"
 
-defs = concrete_list(Token.parse_string("4 + 3 * 2 "))
+defs = concrete_list(Token.parse_string(tst))
 print(gen_CST(defs))
 
 
