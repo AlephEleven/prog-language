@@ -129,7 +129,7 @@ class Token:
     '''
     Converts a string fully to a list of tokens that can be used in the CST
 
-    (final product of tokenizer)
+    (final product of lexer)
     '''
     def parse_string(str):
         return Token.get_keywords(Token.rm_interm_tokens(Token.concat_tokens(Token.gen_tk_list(str))))

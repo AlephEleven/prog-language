@@ -72,7 +72,11 @@ class CST:
             raise Exception("Parser Error: Invalid syntax, could not parse")
 
         return cst
+    '''
+    Converts a token list to a CST
 
+    (final product of parser)
+    '''
     def parse_tokens(tk_list):
         return CST.gen_CST(CST.concrete_list(tk_list))
 
