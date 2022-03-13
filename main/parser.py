@@ -20,8 +20,6 @@ def concrete_list(tk_list):
 Concrete Syntax for language, checks for pattern in concrete list, if none found, returns current index (head)
 loops through entire list
 '''
-
-
 def concrete_defs(conc_list, prec=-1):
     match conc_list, prec:
         case [], _:
@@ -31,7 +29,6 @@ def concrete_defs(conc_list, prec=-1):
             return [{"EXP": [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + concrete_defs(t, prec)
         #<Exp> := <Exp> <BOp> <Exp> (with PEMDAS precedence)
         case [{"EXP": e1}, {"OP": op}, {"EXP": e2}, *t], _ if prec > 1:
-            #print(f"{op} \t {prec}")
             match op, prec:
                 case {"MULT": _} | {"DIV": _}, 2:
                     return [{"EXP": [{"EXP": e1}, {"OP": op}, {"EXP": e2}]}] + concrete_defs(t, prec)
@@ -66,9 +63,10 @@ def gen_CST(conc_list, alarm=2):
 
     return cst
 
-tst = "4+(3*(4/2))/2+(1)"
+inp = "4+(3*(4/2))/2+(1)"
+tks = Token.parse_string(inp)
 
-defs = concrete_list(Token.parse_string(tst))
+defs = concrete_list(tks)
 print(gen_CST(defs))
 
 
