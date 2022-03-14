@@ -6,25 +6,24 @@ syntax tree, and finalize it by making an AST
 '''
 Converts token to non-terminal token, i.e holds general type used for matching in CST
 '''
+def concrete_type(token):
+    match token:
+        case {"NUMBER": _}:
+            return {"EXP": token}
+        case {"PLUS": _} | {"MINUS": _} | {"MULT": _} | {"DIV": _}:
+            return {"OP": token}
+        case other:
+            return other
 
 class CST:
     def __init__(self):
         pass
 
-    def concrete_type(token):
-        match token:
-            case {"NUMBER": _}:
-                return {"EXP": token}
-            case {"PLUS": _} | {"MINUS": _} | {"MULT": _} | {"DIV": _}:
-                return {"OP": token}
-            case other:
-                return other
-
     '''
     Converts token list to list of non-terminal tokens
     '''
     def concrete_list(tk_list):
-        return [CST.concrete_type(i) for i in tk_list]
+        return [concrete_type(i) for i in tk_list]
 
     '''
     Concrete Syntax for language, checks for pattern in concrete list, if none found, returns current index (head)
