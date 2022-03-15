@@ -14,18 +14,30 @@ interpreter portion heavily based on course textbook: https://github.com/ebonell
 
 ## CST
 
-Exp ::= ID | NUMBER
+Exp ::= ID | NUMBER | bool
 
 Exp ::= (Exp)
 
 Exp ::= Exp OP Exp
 
+Exp ::= Exp and Exp
+
+Exp ::= Exp or Exp
+
+Exp ::= iszero(Exp)
+
+Exp ::= abs(Exp)
+
+Exp ::= max(Exp, Exp) | min(Exp, Exp)
+
 Exp ::= Exp
 
 OP ::= + | - | * | /
 
+bool ::= true | false
+
 Precendence:
-1.  ()
+1.  (), func()
 2.  Mult/Div
 3.  Add/Sub
 
