@@ -5,7 +5,7 @@ want to evaluate.
 
 #short-form for making mini classes (exprs for this case)
 def expr_cls(name, params, str_rep):
-    return type(name, (object,), {"vals": params, "str": str_rep})
+    return type(name, (object,), {"vals": params, "str": str_rep, "id":name})
 
 #prettier get function for string-rep of expr_cls
 def est(expr_obj):
