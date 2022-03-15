@@ -1,3 +1,4 @@
+import pprint
 '''
 Given a list of tokens, we want to use a set of concrete syntax rules in order to create a
 syntax tree, and finalize it by making an AST
@@ -104,6 +105,9 @@ class CST:
                 return [{"EXP": res[0]}]
             case _:
                 return res
+
+    def display_tree(conc_tree):
+        pprint.pprint(conc_tree, width=1)
 
 
 

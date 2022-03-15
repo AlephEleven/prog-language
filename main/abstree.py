@@ -1,18 +1,13 @@
-from lexer import Token
-from parser import CST
-import pprint
-
 '''
 Given a Concrete Syntax Tree, we want to convert it to an Abstract Syntax Tree that contains the direct functions we
 want to evaluate.
 '''
 
-
-
 #short-form for making mini classes (exprs for this case)
 def expr_cls(name, params, str_rep):
     return type(name, (object,), {"vals": params, "str": str_rep})
 
+#prettier get function for string-rep of expr_cls
 def est(expr_obj):
     return expr(expr_obj).str
 
@@ -36,42 +31,44 @@ def expr(token):
         case v:
             return abs_defs({"EXP": v})
 
+class AST:
+    def __init__(self):
+        pass
 
-'''
-Converts CST (dictionary-type) to AST (class-type)
-'''
-def abs_defs(conc_tree):
-    match conc_tree:
-        case {"EXP": v}:
-            match v:
-                case [{"LBRAC": _}, {"EXP": e}, {"RBRAC": _}] | {"EXP": e}:
-                    return expr(e)
-                case [{"EXP": e1}, {"OP": op}, {"EXP": e2}]:
-                    match op:
-                        case {"PLUS": _}:
-                            #print(e1, "\t", e2)
-                            return expr({"EAdd": [e1, e2]})
-                        case {"MINUS": _}:
-                            return expr({"ESub": [e1, e2]})
-                        case {"MULT": _}:
-                            return expr({"EMul": [e1, e2]})
-                        case {"DIV": _}:
-                            return expr({"EDiv": [e1, e2]})
+    '''
+    Recursively replaces nodes in CST with expressions defined by AST in expr
+    '''
+    def abs_defs(conc_tree):
+        match conc_tree:
+            case {"EXP": v}:
+                match v:
+                    case [{"LBRAC": _}, {"EXP": e}, {"RBRAC": _}] | {"EXP": e}:
+                        return expr(e)
+                    case [{"EXP": e1}, {"OP": op}, {"EXP": e2}]:
+                        match op:
+                            case {"PLUS": _}:
+                                #print(e1, "\t", e2)
+                                return expr({"EAdd": [e1, e2]})
+                            case {"MINUS": _}:
+                                return expr({"ESub": [e1, e2]})
+                            case {"MULT": _}:
+                                return expr({"EMul": [e1, e2]})
+                            case {"DIV": _}:
+                                return expr({"EDiv": [e1, e2]})
 
-                case _:
-                    return expr_cls("invalid", {"str": -1}, "Invalid")
-        case _:
-            return expr_cls("invalid", {"str": -1}, "Invalid")
+                    case _:
+                        return expr_cls("invalid", {"str": -1}, "Invalid")
+            case _:
+                return expr_cls("invalid", {"str": -1}, "Invalid")
 
+    '''
+    Converts a CST (dictionary tree-type) to an AST (stacked class-type)
 
-def display_tree(conc_tree):
-    pprint.pprint(conc_tree, width=1)
+    (final product of abstree)
+    '''
+    def parse_CST(conc_tree):
+        return AST.abs_defs(conc_tree[0])
 
-s = "3/2+2+(4*2)/2-3+1"
-t = CST.parse_tokens(Token.parse_string(s))
-
-display_tree(t[0])
-
-res = abs_defs(t[0])
-
-print(res.str)
+    #returns string-rep of entire AST
+    def parse_CST_print(conc_tree):
+        return AST.parse_CST(conc_tree).str
