@@ -26,7 +26,8 @@ def eval_expr(exp):
             (n) = exp
             return return_exp(n)
         case "Var":
-            return return_exp(exp)
+            (n) = exp
+            return return_exp(n)
         case "Add":
             (e1, e2) = exp.vals
             v1 = pass_eval(e1, int_of_Int)
@@ -73,4 +74,4 @@ def parse(s):
 def interp(s):
     return f"Result: {result(eval_expr(AST.parse_CST(string_to_CST(s))))}"
 
-print(interp("3/2"))
+print(interp("2+2"))
