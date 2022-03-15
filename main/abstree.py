@@ -47,7 +47,6 @@ class AST:
                     case [{"EXP": e1}, {"OP": op}, {"EXP": e2}]:
                         match op:
                             case {"PLUS": _}:
-                                #print(e1, "\t", e2)
                                 return expr({"EAdd": [e1, e2]})
                             case {"MINUS": _}:
                                 return expr({"ESub": [e1, e2]})
