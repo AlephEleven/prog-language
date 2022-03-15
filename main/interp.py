@@ -73,5 +73,3 @@ def parse(s):
 
 def interp(s):
     return f"Result: {result(eval_expr(AST.parse_CST(string_to_CST(s))))}"
-
-print(interp("2+2"))
