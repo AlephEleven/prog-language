@@ -1,3 +1,4 @@
+from calendar import c
 from lexer import Token
 from parser import CST
 from abstree import *
@@ -7,25 +8,54 @@ from ds import *
 Here is where we want to finally evaluate expressions that come from the AST
 '''
 
-def valof(eval_e):
-    return eval_e.vals.vals
+#evaluates an expression, then binds it
+def pass_eval(exp, f):
+    return pass_exp(eval_expr(exp), f).vals
 
+#returns result with type
+def return_type(res, i_type):
+    return return_exp(expr({i_type: res}))
 
+#throws error
+def ret_error(s):
+    result(error_exp(s))
+
+#evaluate expression
 def eval_expr(exp):
     match exp.id:
         case "Int":
-            return return_exp(exp)
+            (n) = exp
+            return return_exp(n)
         case "Var":
             return return_exp(exp)
         case "Add":
             (e1, e2) = exp.vals
-            v1 = pass_exp(eval_expr(int_of_Int(e1)), valof)
-            v2 = pass_exp(eval_expr(int_of_Int(e2)), valof)
-            res = v1+v2
-            return return_exp(expr({"NUMBER": res}))
-
-
-
+            v1 = pass_eval(e1, int_of_Int)
+            v2 = pass_eval(e2, int_of_Int)
+            ans = v1+v2
+            return return_type(int(ans),"NUMBER")
+        case "Sub":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, int_of_Int)
+            v2 = pass_eval(e2, int_of_Int)
+            ans = v1-v2
+            return return_type(int(ans),"NUMBER")
+        case "Mul":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, int_of_Int)
+            v2 = pass_eval(e2, int_of_Int)
+            ans = v1*v2
+            return return_type(int(ans),"NUMBER")
+        case "Div":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, int_of_Int)
+            v2 = pass_eval(e2, int_of_Int)
+            if v2==0:
+                ret_error("Division by zero")
+            ans = v1/v2
+            return return_type(int(ans),"NUMBER")
+        case _:
+            ret_error("Not implemented")
 
 
 '''
@@ -44,4 +74,4 @@ def parse(s):
 def interp(s):
     return f"Result: {result(eval_expr(AST.parse_CST(string_to_CST(s))))}"
 
-print(interp("2+3"))
+print(interp("3/2"))
