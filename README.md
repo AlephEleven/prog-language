@@ -14,12 +14,12 @@ interpreter portion heavily based on course textbook: https://github.com/ebonell
 
 ## CST
 
-<Exp> ::= <ID> | <NUMBER>
-<Exp> ::= (<Exp>)
-<Exp> ::= <Exp> <OP> <Exp>
-<Exp> ::= <Exp>
+Exp ::= ID | NUMBER
+Exp ::= (Exp)
+Exp ::= Exp OP Exp
+Exp ::= Exp
 
-<BOp> ::= <+|-|*|/>
+BOp ::= +|-|*|/
 
 Precendence:
 1 - ()
