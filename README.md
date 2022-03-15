@@ -25,9 +25,9 @@ Exp ::= Exp
 BOp ::= +|-|*|/
 
 Precendence:
-1 - ()
-2 - Mult/Div
-3 - Add/Sub
+1.  ()
+2.  Mult/Div
+3.  Add/Sub
 
 ## Testing
 
