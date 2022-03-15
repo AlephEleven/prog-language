@@ -28,6 +28,11 @@ THIS IS WHAT YOU EDIT TO ADD TYPES TO INTERPRETER, i.e abs(x), let x=5 in x+1.
 '''
 tk_ids = [
     "abs",
+    "max",
+    "min",
+    "iszero",
+    "and",
+    "or",
     "let",
     "in"
 ]
@@ -59,6 +64,7 @@ class Token:
             case "(": return {"LBRAC": str_token}
             case ")": return {"RBRAC": str_token}
             case "=": return {"EQUAL": str_token}
+            case ",": return {"COMMA": str_token}
             case _:
                 raise Exception(f"Lexer Error: Invalid string-rep token found at offset {offset}: <{str_token}>")
 

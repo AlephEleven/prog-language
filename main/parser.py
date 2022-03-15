@@ -16,7 +16,7 @@ Concrete Syntax:
 
 
 Precendence:
-1 - ()
+1 - (), func()
 2 - Mult/Div
 3 - Add/Sub
 '''
@@ -57,6 +57,30 @@ class CST:
         match conc_list, prec:
             case [], _:
                 return []
+            #<Exp> ::= true
+            case [{'EXP': {"ID": "true"}}, *t], 1:
+                return [{"EXP": [{'EXP': "true"}]}] + CST.concrete_defs(t, prec)
+            #<Exp> ::= false
+            case [{'EXP': {"ID": "false"}}, *t], 1:
+                return [{"EXP": [{'EXP': "false"}]}] + CST.concrete_defs(t, prec)
+            #<Exp> ::= <Exp> and <Exp>
+            case [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}, *t], 1:
+                return [{"EXP": [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}]}] + CST.concrete_defs(t, prec)
+            #<Exp> ::= <Exp> or <Exp>
+            case [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}, *t], 1:
+                return [{"EXP": [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}]}] + CST.concrete_defs(t, prec)
+            #<Exp> ::= abs(<Exp>)
+            case [{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
+                return [{"EXP": [{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
+            #<Exp> ::= iszero?(<Exp>)
+            case [{'KEY': "iszero"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
+                return [{"EXP": [{'KEY': "iszero"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
+            #<Exp> ::= max(<Exp>,<Exp>)
+            case [{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
+                return [{"EXP": [{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
+            #<Exp> ::= min(<Exp>,<Exp>)
+            case [{'KEY': "min"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
+                return [{"EXP": [{'KEY': "min"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
             #<Exp> ::= (<Exp>)
             case [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
                 return [{"EXP": [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
@@ -111,6 +135,7 @@ class CST:
     #displays entire CST
     def display_tree(conc_tree):
         pprint.pprint(conc_tree, width=1)
+        
 
 
 

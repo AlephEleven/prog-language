@@ -20,6 +20,8 @@ def expr(token):
     match token:
         case {"NUMBER": v}:
             return expr_cls("Int", v, f"Int {v}")
+        case {"BOOL": v}:
+            return expr_cls("Bool", v, f"Bool {v}")
         case {"ID": v}:
             return expr_cls("Var", v, f'Var "{v}"')
         case {"EAdd": [v1, v2]}:
@@ -30,6 +32,22 @@ def expr(token):
             return expr_cls("Mul", (expr(v1), expr(v2)), f"Mul({est(v1)}, {est(v2)})")
         case {"EDiv": [v1, v2]}:
             return expr_cls("Div", (expr(v1), expr(v2)), f"Div({est(v1)}, {est(v2)})")
+        case {"EIZero": v}:
+            return expr_cls("IsZero?", expr(v), f"IsZero?({est(v)})")
+        case {"ETrue": _}:
+            return expr({"BOOL": True})
+        case {"EFalse": _}:
+            return expr({"BOOL": False})
+        case {"EAnd": [v1, v2]}:
+            return expr_cls("And", (expr(v1), expr(v2)), f"And({est(v1)}, {est(v2)})")
+        case {"EOr": [v1, v2]}:
+            return expr_cls("Or", (expr(v1), expr(v2)), f"Or({est(v1)}, {est(v2)})")
+        case {"EAbs": v}:
+            return expr_cls("Abs", expr(v), f"Abs({est(v)})")
+        case {"EMax": [v1, v2]}:
+            return expr_cls("Max", (expr(v1), expr(v2)), f"Max({est(v1)}, {est(v2)})")
+        case {"EMin": [v1, v2]}:
+            return expr_cls("Min", (expr(v1), expr(v2)), f"Min({est(v1)}, {est(v2)})")
         case v:
             return AST.abs_defs({"EXP": v})
 
@@ -46,6 +64,22 @@ class AST:
         match conc_tree:
             case {"EXP": v}:
                 match v:
+                    case [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}]:
+                        return expr({"EAnd": [e1, e2]})
+                    case [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}]:
+                        return expr({"EOr": [e1, e2]})
+                    case [{"KEY": "iszero"}, {"LBRAC": _}, {"EXP": e}, {"RBRAC": _}]:
+                        return expr({"EIZero": e})
+                    case [{"EXP": "true"}]:
+                        return expr({"ETrue": "true"})
+                    case [{"EXP": "false"}]:
+                        return expr({"EFalse": "false"})
+                    case [{"KEY": "abs"}, {"LBRAC": _}, {"EXP": e}, {"RBRAC": _}]:
+                        return expr({"EAbs": e})
+                    case [{'KEY': "max"}, {"LBRAC": _}, {"EXP": e1}, {"COMMA": _}, {"EXP": e2}, {"RBRAC": _}]:
+                        return expr({"EMax": [e1, e2]})
+                    case [{'KEY': "min"}, {"LBRAC": _}, {"EXP": e1}, {"COMMA": _}, {"EXP": e2}, {"RBRAC": _}]:
+                        return expr({"EMin": [e1, e2]})
                     case [{"LBRAC": _}, {"EXP": e}, {"RBRAC": _}] | {"EXP": e}:
                         return expr(e)
                     case [{"EXP": e1}, {"OP": op}, {"EXP": e2}]:

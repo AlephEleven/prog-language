@@ -45,3 +45,10 @@ def int_of_Int(exp):
             return exp
         case _:
             raise Exception("Expected an Int!")
+
+def bool_of_Bool(exp):
+    match exp.id:
+        case "Bool":
+            return exp
+        case _:
+            raise Exception("Expected an Bool!")

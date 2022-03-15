@@ -32,6 +32,9 @@ def eval_expr(exp):
         case "Var":
             (n) = exp
             return return_exp(n)
+        case "Bool":
+            (n) = exp
+            return return_exp(n)
         case "Add":
             (e1, e2) = exp.vals
             v1 = pass_eval(e1, int_of_Int)
@@ -58,6 +61,40 @@ def eval_expr(exp):
                 ret_error("Division by zero")
             ans = v1/v2
             return return_type(int(ans),"NUMBER")
+        case "IsZero?":
+            (e) = exp.vals
+            v = pass_eval(e, int_of_Int)
+            ans = v==0
+            return return_type(ans,"BOOL")
+        case "And":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, bool_of_Bool)
+            v2 = pass_eval(e2, bool_of_Bool)
+            ans = v1 and v2
+            return return_type(bool(ans),"BOOL")
+        case "Or":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, bool_of_Bool)
+            v2 = pass_eval(e2, bool_of_Bool)
+            ans = v1 or v2
+            return return_type(bool(ans),"BOOL")
+        case "Abs":
+            (e) = exp.vals
+            v = pass_eval(e, int_of_Int)
+            ans = abs(v)
+            return return_type(int(ans),"NUMBER")
+        case "Max":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, int_of_Int)
+            v2 = pass_eval(e2, int_of_Int)
+            ans = max(v1, v2)
+            return return_type(int(ans),"NUMBER")
+        case "Min":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, int_of_Int)
+            v2 = pass_eval(e2, int_of_Int)
+            ans = min(v1, v2)
+            return return_type(int(ans),"NUMBER")
         case _:
             ret_error("Not implemented")
 
@@ -65,6 +102,9 @@ def eval_expr(exp):
 '''
 Application functions
 '''
+
+def string_to_tokens(s):
+    return Token.parse_string(s)
 
 def string_to_CST(s):
     return CST.parse_tokens(Token.parse_string(s))
