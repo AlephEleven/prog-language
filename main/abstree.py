@@ -23,7 +23,7 @@ def expr(token):
         case {"NUMBER": v}:
             return expr_cls("Int", (v), f"Int {v}")
         case {"ID": v}:
-            return expr_cls("Var", (v))
+            return expr_cls("Var", (v), f'Var "{v}"')
         case {"EAdd": [v1, v2]}:
             return expr_cls("Add", (expr(v1), expr(v2)), f"Add({est(v1)}, {est(v2)})")
         case {"ESub": [v1, v2]}:
@@ -64,7 +64,7 @@ def abs_defs(conc_tree):
 def display_tree(conc_tree):
     pprint.pprint(conc_tree, width=1)
 
-s = "(2)"
+s = "2+apple"
 t = CST.parse_tokens(Token.parse_string(s))
 
 #display_tree(t)
