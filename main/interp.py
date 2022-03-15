@@ -19,7 +19,11 @@ def return_type(res, i_type):
 def ret_error(s):
     result(error_exp(s))
 
-#evaluate expression
+'''
+Evaluates Expression
+
+THIS IS WHERE YOU ADD FUNCTIONS IMPLEMENTED IN PARSER/ABSTREE/LEXER
+'''
 def eval_expr(exp):
     match exp.id:
         case "Int":

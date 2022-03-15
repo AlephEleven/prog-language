@@ -20,7 +20,12 @@ tk_def = {
     "letter": [chr(i) for i in range(65, 91)] + [chr(i) for i in range(97, 123)]
 }
 
-#id defintions for ids that will be converted to keywords
+'''
+Token Ids for any keywords to add-on
+
+THIS IS WHAT YOU EDIT TO ADD TYPES TO INTERPRETER, i.e abs(x), let x=5 in x+1.
+                                                       keyw    keyw   keyw
+'''
 tk_ids = [
     "abs",
     "let",

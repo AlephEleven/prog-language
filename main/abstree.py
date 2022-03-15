@@ -13,6 +13,8 @@ def est(expr_obj):
 
 '''
 List of expression in Abstract Syntax
+
+THIS IS WHERE YOU ADD FUNCTION-TYPE for AST
 '''
 def expr(token):
     match token:
@@ -37,6 +39,8 @@ class AST:
 
     '''
     Recursively replaces nodes in CST with expressions defined by AST in expr
+
+    THIS IS WHERE YOU ADD AST MATCHING
     '''
     def abs_defs(conc_tree):
         match conc_tree:
