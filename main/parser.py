@@ -4,12 +4,33 @@ syntax tree, and finalize it by making an AST
 '''
 
 '''
+Concrete Syntax:
+
+<Exp> ::= <ID> | <NUMBER>
+<Exp> ::= (<Exp>)
+<Exp> ::= <Exp> <OP> <Exp>
+<Exp> ::= <Exp>
+
+<BOp> ::= <+|-|*|/>
+
+
+Precendence:
+1 - ()
+2 - Mult/Div
+3 - Add/Sub
+'''
+
+
+
+'''
 Converts token to non-terminal token, i.e holds general type used for matching in CST
 '''
 def concrete_type(token):
     match token:
-        case {"NUMBER": _}:
+        # <Exp> ::= <ID> | <NUMBER>
+        case {"ID": _} | {"NUMBER": _}:
             return {"EXP": token}
+        # <BOp> ::= <+|-|*|/>
         case {"PLUS": _} | {"MINUS": _} | {"MULT": _} | {"DIV": _}:
             return {"OP": token}
         case other:
@@ -33,10 +54,10 @@ class CST:
         match conc_list, prec:
             case [], _:
                 return []
-            #<Exp> := (<Exp>)
+            #<Exp> ::= (<Exp>)
             case [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
                 return [{"EXP": [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
-            #<Exp> := <Exp> <BOp> <Exp> (with PEMDAS precedence)
+            #<Exp> ::= <Exp> <BOp> <Exp> (with PEMDAS precedence)
             case [{"EXP": e1}, {"OP": op}, {"EXP": e2}, *t], _ if prec > 1:
                 match op, prec:
                     case {"MULT": _} | {"DIV": _}, 2:
@@ -45,7 +66,7 @@ class CST:
                         return [{"EXP": [{"EXP": e1}, {"OP": op}, {"EXP": e2}]}] + CST.concrete_defs(t, prec)
                     case _, _:
                         return [{"EXP": e1}]+CST.concrete_defs([{"OP": op}, {"EXP": e2}] + t, prec)
-            #<Any> := <Any>
+            #<Exp> ::= <Exp>
             case [h, *t], _:
                 return [h]+CST.concrete_defs(t, prec)
 
