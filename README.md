@@ -12,6 +12,20 @@ interpreter portion heavily based on course textbook: https://github.com/ebonell
 - Interpreter: Interprets AST and returns final result
 - Ds: extended functions for cleaner interpreter
 
+## CST
+
+<Exp> ::= <ID> | <NUMBER>
+<Exp> ::= (<Exp>)
+<Exp> ::= <Exp> <OP> <Exp>
+<Exp> ::= <Exp>
+
+<BOp> ::= <+|-|*|/>
+
+Precendence:
+1 - ()
+2 - Mult/Div
+3 - Add/Sub
+
 ## Testing
 
 Via interp.py
@@ -55,7 +69,6 @@ interp(s)
 >>> interp("3+2*4")
 'Result: Ok (Int 11)'
 ```
-
 
 
 Requires Python 3.10 and pprint to run
