@@ -98,7 +98,12 @@ class CST:
     (final product of parser)
     '''
     def parse_tokens(tk_list):
-        return CST.gen_CST(CST.concrete_list(tk_list))
+        res = CST.gen_CST(CST.concrete_list(tk_list))
+        match res[0]["EXP"]:
+            case {"NUMBER": _} | {"ID": _}:
+                return [{"EXP": res[0]}]
+            case _:
+                return res
 
 
 
