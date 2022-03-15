@@ -7,9 +7,7 @@ Given a Concrete Syntax Tree, we want to convert it to an Abstract Syntax Tree t
 want to evaluate.
 '''
 
-'''
-expr
-'''
+
 
 #short-form for making mini classes (exprs for this case)
 def expr_cls(name, params, str_rep):
@@ -18,12 +16,15 @@ def expr_cls(name, params, str_rep):
 def est(expr_obj):
     return expr(expr_obj).str
 
+'''
+List of expression in Abstract Syntax
+'''
 def expr(token):
     match token:
         case {"NUMBER": v}:
-            return expr_cls("Int", (v), f"Int {v}")
+            return expr_cls("Int", v, f"Int {v}")
         case {"ID": v}:
-            return expr_cls("Var", (v), f'Var "{v}"')
+            return expr_cls("Var", v, f'Var "{v}"')
         case {"EAdd": [v1, v2]}:
             return expr_cls("Add", (expr(v1), expr(v2)), f"Add({est(v1)}, {est(v2)})")
         case {"ESub": [v1, v2]}:
@@ -33,7 +34,7 @@ def expr(token):
         case {"EDiv": [v1, v2]}:
             return expr_cls("Div", (expr(v1), expr(v2)), f"Div({est(v1)}, {est(v2)})")
         case v:
-            return expr_cls("Other", (v), f"Other({v})")
+            return abs_defs({"EXP": v})
 
 
 '''
@@ -48,6 +49,7 @@ def abs_defs(conc_tree):
                 case [{"EXP": e1}, {"OP": op}, {"EXP": e2}]:
                     match op:
                         case {"PLUS": _}:
+                            #print(e1, "\t", e2)
                             return expr({"EAdd": [e1, e2]})
                         case {"MINUS": _}:
                             return expr({"ESub": [e1, e2]})
@@ -65,7 +67,7 @@ def abs_defs(conc_tree):
 def display_tree(conc_tree):
     pprint.pprint(conc_tree, width=1)
 
-s = "(2+3)*4"
+s = "3/2+2+(4*2)/2-3+1"
 t = CST.parse_tokens(Token.parse_string(s))
 
 display_tree(t[0])
