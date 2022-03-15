@@ -1,4 +1,3 @@
-from calendar import c
 from lexer import Token
 from parser import CST
 from abstree import *
