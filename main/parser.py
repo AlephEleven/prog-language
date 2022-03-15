@@ -7,11 +7,18 @@ syntax tree, and finalize it by making an AST
 '''
 Concrete Syntax:
 
-<Exp> ::= <ID> | <NUMBER>
+<Exp> ::= <ID> | <NUMBER> | {bool}
 <Exp> ::= (<Exp>)
 <Exp> ::= <Exp> <OP> <Exp>
 <Exp> ::= <Exp>
+<Exp> ::= <Exp> and <Exp>
+<Exp> ::= <Exp> or <Exp>
+<Exp> ::= iszero(<Exp>)
+<Exp> ::= abs(<Exp>)
+<Exp> ::= max(<Exp>) | min(<Exp>)
 
+
+bool = true | false
 <BOp> ::= <+|-|*|/>
 
 
@@ -116,7 +123,7 @@ class CST:
             i = i+1 if tmp_cst==cst else 0
 
         if len(cst) > 1:
-            raise Exception("Parser Error: Invalid syntax, could not parse")
+            raise Exception("Parser Error: Invalid syntax, CST could not be built")
 
         return cst
     '''
@@ -126,6 +133,12 @@ class CST:
     '''
     def parse_tokens(tk_list):
         res = CST.gen_CST(CST.concrete_list(tk_list))
+        
+        try:
+            res[0]["EXP"]
+        except:
+            raise Exception("Parser Error: Invalid syntax, Given a single keyword")
+
         match res[0]["EXP"]:
             case {"NUMBER": _} | {"ID": _}:
                 return [{"EXP": res[0]}]
