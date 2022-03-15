@@ -22,7 +22,7 @@ Exp ::= Exp OP Exp
 
 Exp ::= Exp
 
-BOp ::= +|-|*|/
+OP ::= +|-|*|/
 
 Precendence:
 1.  ()
