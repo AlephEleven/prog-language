@@ -4,11 +4,11 @@ from abstree import expr_cls
 Abstracted Results
 '''
 
-#evaluates final result
+#evaluates final result 
 def result(exp):
     match exp.id:
         case "Ok":
-            return exp
+            return f"Ok ({exp.vals.str})"
         case "Error":
             raise Exception(exp.vals)
 
@@ -28,3 +28,16 @@ def pass_exp(exp, f):
             return exp
         case "Ok":
             return f(exp)
+
+
+'''
+Type checking
+'''
+
+
+def int_of_Int(exp):
+    match exp.id:
+        case "Int":
+            return exp
+        case _:
+            return error_exp("Expected an Int!")

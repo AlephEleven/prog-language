@@ -119,8 +119,14 @@ class Token:
     def get_keywords(tk_list):
         for indx, i in enumerate(tk_list):
             match i:
+
+                #convert id -> key if found
                 case {"ID": id} if id.lower() in tk_ids:
                     tk_list[indx] = {"KEY": id.lower()}
+                
+                #convert number form str -> int
+                case {"NUMBER": num}:
+                    tk_list[indx] = {"NUMBER": int(num)}
                 case _:
                     pass
         return tk_list
