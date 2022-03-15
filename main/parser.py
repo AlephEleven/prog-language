@@ -106,6 +106,7 @@ class CST:
             case _:
                 return res
 
+    #displays entire CST
     def display_tree(conc_tree):
         pprint.pprint(conc_tree, width=1)
 
