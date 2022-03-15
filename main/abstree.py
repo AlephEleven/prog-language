@@ -29,7 +29,7 @@ def expr(token):
         case {"EDiv": [v1, v2]}:
             return expr_cls("Div", (expr(v1), expr(v2)), f"Div({est(v1)}, {est(v2)})")
         case v:
-            return abs_defs({"EXP": v})
+            return AST.abs_defs({"EXP": v})
 
 class AST:
     def __init__(self):
