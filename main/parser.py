@@ -75,35 +75,35 @@ class CST:
                 return CST.exp_cont([{'EXP': "false"}], t, prec)
             #<Exp> ::= if <Exp> then <Exp> else <Exp>
             case [{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}, *t], 1:
-                return CST.exp_cont([{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}], t, prec)
+                return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= <Exp> and <Exp>
             case [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}, *t], 1:
-                return CST.exp_cont([{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}], t, prec)
+                return CST.exp_cont(conc_list[:3], t, prec)
             #<Exp> ::= <Exp> or <Exp>
             case [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}, *t], 1:
-                return CST.exp_cont([{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}], t, prec)
+                return CST.exp_cont(conc_list[:3], t, prec)
             #<Exp> ::= abs(<Exp>)
             case [{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
-                return CST.exp_cont([{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}], t, prec)
+                return CST.exp_cont(conc_list[:4], t, prec)
             #<Exp> ::= iszero(<Exp>)
             case [{'KEY': "iszero"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
-                return CST.exp_cont([{'KEY': "iszero"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}], t, prec)
+                return CST.exp_cont(conc_list[:4], t, prec)
             #<Exp> ::= max(<Exp>,<Exp>)
             case [{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
-                return CST.exp_cont([{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}], t, prec)
+                return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= min(<Exp>,<Exp>)
             case [{'KEY': "min"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
-                return CST.exp_cont([{'KEY': "min"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}], t, prec)
+                return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= (<Exp>)
             case [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
-                return CST.exp_cont([{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}], t, prec)
+                return CST.exp_cont(conc_list[:3], t, prec)
             #<Exp> ::= <Exp> <BOp> <Exp> (with PEMDAS precedence)
             case [{"EXP": e1}, {"OP": op}, {"EXP": e2}, *t], _ if prec > 1:
                 match op, prec:
                     case {"MULT": _} | {"DIV": _}, 2:
-                        return CST.exp_cont([{"EXP": e1}, {"OP": op}, {"EXP": e2}], t, prec)
+                        return CST.exp_cont(conc_list[:3], t, prec)
                     case {"PLUS": _} | {"MINUS": _}, 3:
-                        return CST.exp_cont([{"EXP": e1}, {"OP": op}, {"EXP": e2}], t, prec)
+                        return CST.exp_cont(conc_list[:3], t, prec)
                     case _, _:
                         return [{"EXP": e1}]+CST.concrete_defs([{"OP": op}, {"EXP": e2}] + t, prec)
             #<Exp> ::= <Exp>
