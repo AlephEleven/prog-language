@@ -38,6 +38,15 @@ def pass_exp(exp, f):
 Type checking
 '''
 
+def match_generic(exp):
+    match exp.id:
+        case "Int": return "NUMBER"
+        case "Bool": return "BOOL"
+        case "Var": return "ID"
+        case _: return "E"+exp.id.capitalize()
+
+def exp_of_Exp(exp):
+    return exp
 
 def int_of_Int(exp):
     match exp.id:

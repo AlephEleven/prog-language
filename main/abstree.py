@@ -32,7 +32,7 @@ def expr(token):
             return expr_cls("Mul", (expr(v1), expr(v2)), f"Mul({est(v1)}, {est(v2)})")
         case {"EDiv": [v1, v2]}:
             return expr_cls("Div", (expr(v1), expr(v2)), f"Div({est(v1)}, {est(v2)})")
-        case {"EIZero": v}:
+        case {"EIzero": v}:
             return expr_cls("IsZero?", expr(v), f"IsZero?({est(v)})")
         case {"ETrue": _}:
             return expr({"BOOL": True})
@@ -48,6 +48,8 @@ def expr(token):
             return expr_cls("Max", (expr(v1), expr(v2)), f"Max({est(v1)}, {est(v2)})")
         case {"EMin": [v1, v2]}:
             return expr_cls("Min", (expr(v1), expr(v2)), f"Min({est(v1)}, {est(v2)})")
+        case {"EIte": [v1, v2, v3]}:
+            return expr_cls("ITE", (expr(v1), expr(v2), expr(v3)), f"ITE({est(v1)}, {est(v2)}, {est(v3)})")
         case v:
             return AST.abs_defs({"EXP": v})
 
@@ -64,12 +66,14 @@ class AST:
         match conc_tree:
             case {"EXP": v}:
                 match v:
+                    case [{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}]:
+                        return expr({"EIte": [e1, e2, e3]})
                     case [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}]:
                         return expr({"EAnd": [e1, e2]})
                     case [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}]:
                         return expr({"EOr": [e1, e2]})
                     case [{"KEY": "iszero"}, {"LBRAC": _}, {"EXP": e}, {"RBRAC": _}]:
-                        return expr({"EIZero": e})
+                        return expr({"EIzero": e})
                     case [{"EXP": "true"}]:
                         return expr({"ETrue": "true"})
                     case [{"EXP": "false"}]:

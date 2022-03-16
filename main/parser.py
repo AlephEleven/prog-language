@@ -65,11 +65,16 @@ class CST:
             case [], _:
                 return []
             #<Exp> ::= true
-            case [{'EXP': {"ID": "true"}}, *t], 1:
+            case [{'EXP': {"ID": "true"}}, *t], 0:
                 return [{"EXP": [{'EXP': "true"}]}] + CST.concrete_defs(t, prec)
             #<Exp> ::= false
-            case [{'EXP': {"ID": "false"}}, *t], 1:
+            case [{'EXP': {"ID": "false"}}, *t], 0:
                 return [{"EXP": [{'EXP': "false"}]}] + CST.concrete_defs(t, prec)
+
+            #<Exp> ::= if <Exp> then <Exp> else <Exp>
+            case [{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}, *t], 1:
+                return [{"EXP": [{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}]}] + CST.concrete_defs(t, prec)
+
             #<Exp> ::= <Exp> and <Exp>
             case [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}, *t], 1:
                 return [{"EXP": [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}]}] + CST.concrete_defs(t, prec)
@@ -116,6 +121,7 @@ class CST:
         cst = conc_list
         while(i < alarm):
             tmp_cst = cst
+            cst = CST.concrete_defs(cst, 0)
             cst = CST.concrete_defs(cst, 1)
             cst = CST.concrete_defs(cst, 2)
             cst = CST.concrete_defs(cst, 3)
@@ -133,7 +139,7 @@ class CST:
     '''
     def parse_tokens(tk_list):
         res = CST.gen_CST(CST.concrete_list(tk_list))
-        
+
         try:
             res[0]["EXP"]
         except:
