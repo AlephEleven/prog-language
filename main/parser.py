@@ -48,6 +48,9 @@ class CST:
     def __init__(self):
         pass
 
+    def exp_cont(matching, tail, prec):
+        return [{"EXP": matching}] + CST.concrete_defs(tail, prec)
+
     '''
     Converts token list to list of non-terminal tokens
     '''
@@ -66,43 +69,41 @@ class CST:
                 return []
             #<Exp> ::= true
             case [{'EXP': {"ID": "true"}}, *t], 0:
-                return [{"EXP": [{'EXP': "true"}]}] + CST.concrete_defs(t, prec)
+                return CST.exp_cont([{'EXP': "true"}], t, prec)
             #<Exp> ::= false
             case [{'EXP': {"ID": "false"}}, *t], 0:
-                return [{"EXP": [{'EXP': "false"}]}] + CST.concrete_defs(t, prec)
-
+                return CST.exp_cont([{'EXP': "false"}], t, prec)
             #<Exp> ::= if <Exp> then <Exp> else <Exp>
             case [{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}, *t], 1:
-                return [{"EXP": [{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}]}] + CST.concrete_defs(t, prec)
-
+                return CST.exp_cont([{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}], t, prec)
             #<Exp> ::= <Exp> and <Exp>
             case [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}, *t], 1:
-                return [{"EXP": [{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}]}] + CST.concrete_defs(t, prec)
+                return CST.exp_cont([{"EXP": e1}, {"KEY": "and"}, {"EXP": e2}], t, prec)
             #<Exp> ::= <Exp> or <Exp>
             case [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}, *t], 1:
-                return [{"EXP": [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}]}] + CST.concrete_defs(t, prec)
+                return CST.exp_cont([{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}], t, prec)
             #<Exp> ::= abs(<Exp>)
             case [{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
-                return [{"EXP": [{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
-            #<Exp> ::= iszero?(<Exp>)
+                return CST.exp_cont([{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}], t, prec)
+            #<Exp> ::= iszero(<Exp>)
             case [{'KEY': "iszero"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
-                return [{"EXP": [{'KEY': "iszero"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
+                return CST.exp_cont([{'KEY': "iszero"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}], t, prec)
             #<Exp> ::= max(<Exp>,<Exp>)
             case [{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
-                return [{"EXP": [{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
+                return CST.exp_cont([{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}], t, prec)
             #<Exp> ::= min(<Exp>,<Exp>)
             case [{'KEY': "min"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
-                return [{"EXP": [{'KEY': "min"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
+                return CST.exp_cont([{'KEY': "min"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}], t, prec)
             #<Exp> ::= (<Exp>)
             case [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
-                return [{"EXP": [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]}] + CST.concrete_defs(t, prec)
+                return CST.exp_cont([{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}], t, prec)
             #<Exp> ::= <Exp> <BOp> <Exp> (with PEMDAS precedence)
             case [{"EXP": e1}, {"OP": op}, {"EXP": e2}, *t], _ if prec > 1:
                 match op, prec:
                     case {"MULT": _} | {"DIV": _}, 2:
-                        return [{"EXP": [{"EXP": e1}, {"OP": op}, {"EXP": e2}]}] + CST.concrete_defs(t, prec)
+                        return CST.exp_cont([{"EXP": e1}, {"OP": op}, {"EXP": e2}], t, prec)
                     case {"PLUS": _} | {"MINUS": _}, 3:
-                        return [{"EXP": [{"EXP": e1}, {"OP": op}, {"EXP": e2}]}] + CST.concrete_defs(t, prec)
+                        return CST.exp_cont([{"EXP": e1}, {"OP": op}, {"EXP": e2}], t, prec)
                     case _, _:
                         return [{"EXP": e1}]+CST.concrete_defs([{"OP": op}, {"EXP": e2}] + t, prec)
             #<Exp> ::= <Exp>
@@ -129,7 +130,7 @@ class CST:
             i = i+1 if tmp_cst==cst else 0
 
         if len(cst) > 1:
-            raise Exception("Parser Error: Invalid syntax, CST could not be built")
+            raise Exception("Parser Error: Invalid syntax, unable to parse CST")
 
         return cst
     '''
