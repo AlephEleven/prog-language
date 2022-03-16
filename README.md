@@ -30,6 +30,8 @@ Exp ::= abs(Exp)
 
 Exp ::= max(Exp, Exp) | min(Exp, Exp)
 
+Exp ::= if Exp then Exp else Exp
+
 Exp ::= Exp
 
 OP ::= + | - | * | /
