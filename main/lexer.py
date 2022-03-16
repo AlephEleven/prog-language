@@ -35,7 +35,9 @@ tk_ids = [
     "or",
     "if",
     "then",
-    "else"
+    "else",
+    "let",
+    "in"
 ]
 
 class Token:

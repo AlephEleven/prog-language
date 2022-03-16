@@ -4,7 +4,7 @@ from interp import *
 
 args = sys.argv
 
-usage = f"Usage: {args[0]} filename [interp|parse|CST|tokens]"
+usage = f"Usage: {args[0]} filename [interp|parse|CST|tokens|all]"
 
 if(len(args) > 3):
     raise Exception(f"{usage}\n Error: too many flags specified ({len(args)-1})")
@@ -21,5 +21,10 @@ match args[2]:
         display_CST(content)
     case "tokens":
         print(string_to_tokens(content))
+    case "all":
+        print(string_to_tokens(content))
+        display_CST(content)
+        print(parse(content))
+        print(interp(content))
     case _:
         print(usage)

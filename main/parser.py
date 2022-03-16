@@ -73,6 +73,9 @@ class CST:
             #<Exp> ::= false
             case [{'EXP': {"ID": "false"}}, *t], 0:
                 return CST.exp_cont([{'EXP': "false"}], t, prec)
+            #<Exp> ::= let <Exp/Id> = <Exp> in <Exp>
+            case [{"KEY": "let"}, {"EXP": id}, {"EQUAL": eq}, {"EXP": defin}, {"KEY": "in"}, {"EXP": body}, *t], 1:
+                return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= if <Exp> then <Exp> else <Exp>
             case [{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}, *t], 1:
                 return CST.exp_cont(conc_list[:6], t, prec)

@@ -24,10 +24,6 @@ def return_type(res, i_type):
 
     return return_exp(expr({i_type: wrapper(res)}))
 
-#throws error
-def ret_error(s):
-    result(error_exp(s))
-
 '''
 Evaluates Expression
 
@@ -109,6 +105,10 @@ def eval_expr(exp):
             v1 = pass_eval(e1, bool_of_Bool)
             if v1: return eval_expr(e2)
             else: return eval_expr(e3)
+        case "Let":
+            (id, defin, body) = exp.vals
+            print(exp.str)
+
         case _:
             ret_error("Not implemented")
 

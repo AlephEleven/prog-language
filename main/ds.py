@@ -33,6 +33,31 @@ def pass_exp(exp, f):
         case "Ok":
             return f(return_val(exp))
 
+#throws error
+def ret_error(s):
+    result(error_exp(s))
+
+
+'''
+Variable Environments
+'''
+
+def empty_env():
+    return expr_cls("EmptyEnv", None, f"EmptyEnv")
+
+def extend_env(id, defin, env):
+    return return_exp(expr_cls("ExtendEnv", (id, defin, env), f"ExtendEnv({id}, {defin}, {env})"))
+
+def apply_env(id, env):
+    match env.id:
+        case "EmptyEnv":
+            ret_error(f"{id} not found!")
+        case "ExtendEnv":
+            if id==env.vals[0]:
+                return return_exp(env.vals[1])
+            else:
+                apply_env(id, env.vals[2])
+
 
 '''
 Type checking
