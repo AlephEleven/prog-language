@@ -30,6 +30,8 @@ Exp ::= abs(Exp)
 
 Exp ::= max(Exp, Exp) | min(Exp, Exp)
 
+Exp ::= if Exp then Exp else Exp
+
 Exp ::= Exp
 
 OP ::= + | - | * | /
@@ -43,9 +45,23 @@ Precendence:
 
 ## Testing
 
-Via interp.py
+Via execute folder in command line:
 
-### Display CST
+```
+$ python3.10 runlang.py filename [interp|parse|CST|tokens]
+```
+
+Via interp.py:
+
+### Tokens
+
+shows tokens formed from string
+```
+>>> string_to_tokens("3+2*4")
+[{'NUMBER': 3}, {'PLUS': '+'}, {'NUMBER': 2}, {'MULT': '*'}, {'NUMBER': 4}]
+```
+
+### CST
 
 displays dictionary tree of CST via pprint printing
 ```
@@ -84,6 +100,5 @@ interp(s)
 >>> interp("3+2*4")
 'Result: Ok (Int 11)'
 ```
-
 
 Requires Python 3.10 and pprint to run
