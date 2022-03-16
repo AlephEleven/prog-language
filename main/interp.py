@@ -13,6 +13,7 @@ def pass_eval(exp, f):
 
 #returns result with type
 def return_type(res, i_type):
+    #print(res, i_type)
     match i_type:
         case "NUMBER":
             wrapper = int
@@ -106,17 +107,8 @@ def eval_expr(exp):
         case "ITE":
             (e1, e2, e3) = exp.vals
             v1 = pass_eval(e1, bool_of_Bool)
-            v2 = pass_eval(e2, exp_of_Exp)
-            v3 = pass_eval(e3, exp_of_Exp)
-            
-            if v1:
-                ans = v2
-                ans_type = match_generic(e2)
-            else:
-                ans = v3
-                ans_type = match_generic(e3)
-
-            return return_type(ans, ans_type)
+            if v1: return eval_expr(e2)
+            else: return eval_expr(e3)
         case _:
             ret_error("Not implemented")
 
