@@ -10,7 +10,7 @@ interpreter portion heavily based on course textbook: https://github.com/ebonell
 - Parser: Parses list of tokens to Concrete Syntax Tree (CST, dictionary tree-based)
 - AST: Converts CST to Abstract Syntax Tree (stacked function-based)
 - Interpreter: Interprets AST and returns final result
-- Ds: extended functions for cleaner interpreter
+- Ds: extended functions for cleaner interpreter, including Environment for variable handling
 
 ## CST
 
@@ -31,6 +31,8 @@ Exp ::= abs(Exp)
 Exp ::= max(Exp, Exp) | min(Exp, Exp)
 
 Exp ::= if Exp then Exp else Exp
+
+Exp ::= let Exp/ID = Exp in Exp
 
 Exp ::= Exp
 
