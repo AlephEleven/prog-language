@@ -20,6 +20,13 @@ def return_exp(exp):
 def return_val(ret):
     return ret.vals
 
+def rem_ok(exp):
+    match exp.id:
+        case "Ok":
+            return exp.vals
+        case _:
+            return exp
+
 #Abstracted error type
 def error_exp(s):
     return expr_cls("Error", s, f'Error "{s}"')
@@ -48,15 +55,18 @@ def empty_env():
 def extend_env(id, defin, env):
     return return_exp(expr_cls("ExtendEnv", (id, defin, env), f"ExtendEnv({id}, {defin}, {env})"))
 
-def apply_env(id, env):
+def apply_env_h(id, env):
     match env.id:
         case "EmptyEnv":
-            ret_error(f"{id} not found!")
+            ret_error(f"{id.str} not found!")
         case "ExtendEnv":
-            if id==env.vals[0]:
+            if id.vals==env.vals[0].vals:
                 return return_exp(env.vals[1])
             else:
-                apply_env(id, env.vals[2])
+                return apply_env_h(id, rem_ok(env.vals[2]))
+
+def apply_env(id, env):
+    return apply_env_h(id, rem_ok(env))
 
 
 '''

@@ -29,14 +29,19 @@ Evaluates Expression
 
 THIS IS WHERE YOU ADD FUNCTIONS IMPLEMENTED IN PARSER/ABSTREE/LEXER
 '''
+
+env = empty_env()
+
 def eval_expr(exp):
+    global env
     match exp.id:
         case "Int":
             (n) = exp
             return return_exp(n)
         case "Var":
             (n) = exp
-            return return_exp(n)
+            ans = apply_env(n, env)
+            return ans
         case "Bool":
             (n) = exp
             return return_exp(n)
@@ -107,7 +112,9 @@ def eval_expr(exp):
             else: return eval_expr(e3)
         case "Let":
             (id, defin, body) = exp.vals
-            print(exp.str)
+            eval_expr(defin)
+            env = extend_env(id, defin, env)
+            return eval_expr(body)
 
         case _:
             ret_error("Not implemented")
