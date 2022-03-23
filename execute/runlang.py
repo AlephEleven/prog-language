@@ -6,8 +6,8 @@ args = sys.argv
 
 usage = f"Usage: {args[0]} filename [interp|parse|CST|tokens|all]"
 
-if(len(args) > 3):
-    raise Exception(f"{usage}\n Error: too many flags specified ({len(args)-1})")
+if(len(args) != 3):
+    raise Exception(f"{usage}\n Error: too many/less flags specified ({len(args)-1})")
 
 F = open(args[1], "r")
 content = F.read()

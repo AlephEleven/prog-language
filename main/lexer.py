@@ -1,3 +1,8 @@
+import sys
+
+def clean_excep(s):
+    sys.tracebacklimit = 0
+    raise Exception(s)
 '''
 Given a string, we want to express the following values as:
 
@@ -37,7 +42,9 @@ tk_ids = [
     "then",
     "else",
     "let",
-    "in"
+    "in",
+    "begin",
+    "end"
 ]
 
 class Token:
@@ -69,7 +76,7 @@ class Token:
             case "=": return {"EQUAL": str_token}
             case ",": return {"COMMA": str_token}
             case _:
-                raise Exception(f"Lexer Error: Invalid string-rep token found at offset {offset}: <{str_token}>")
+                clean_excep(f"Lexer Error: Invalid string-rep token found at offset {offset}: <{str_token}>")
 
     '''
     Takes the current token being analyzed, and the next token, then updates its accordingly

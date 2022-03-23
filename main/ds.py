@@ -1,4 +1,9 @@
 from abstree import expr_cls
+import sys
+
+def clean_excep(s):
+    sys.tracebacklimit = 0
+    raise Exception(s)
 
 '''
 Abstracted Results
@@ -8,7 +13,7 @@ Abstracted Results
 def result(exp):
     match exp.id:
         case "Error":
-            raise Exception(exp.vals)
+            clean_excep(exp.vals)
         case "Ok":
             return f"Ok ({exp.vals.str})"
 

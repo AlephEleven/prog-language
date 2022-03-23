@@ -1,1 +1,10 @@
-let x=4 in (let y=2 in (let z=3 in (max(x, 5)+min(1, y)+abs(0-z))))
+begin
+
+    let x = 5 in x
+    let y = 4 in y
+    let z = 1 in z
+
+    begin
+        iszero(x+y+z-10) or false
+    end
+end

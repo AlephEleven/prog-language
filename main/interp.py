@@ -115,6 +115,12 @@ def eval_expr(exp):
             eval_expr(defin)
             env = extend_env(id, defin, env)
             return eval_expr(body)
+        case "Line":
+            (es) = exp.vals
+            for e in es[:-1]:
+                eval_expr(e)
+
+            return eval_expr(es[-1])
 
         case _:
             ret_error("Not implemented")
@@ -138,3 +144,5 @@ def parse(s):
 
 def interp(s):
     return f"Result: {result(eval_expr(AST.parse_CST(string_to_CST(s))))}"
+
+

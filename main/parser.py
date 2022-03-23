@@ -1,4 +1,9 @@
 import pprint
+import sys
+
+def clean_excep(s):
+    sys.tracebacklimit = 0
+    raise Exception(s)
 '''
 Given a list of tokens, we want to use a set of concrete syntax rules in order to create a
 syntax tree, and finalize it by making an AST
@@ -67,6 +72,11 @@ class CST:
         match conc_list, prec:
             case [], _:
                 return []
+            #<Exp> ::= begin <EXP> end
+            case [{"KEY": "begin"}, {"EXP": e1}, {"KEY": "end"}, *t], 4:
+                return CST.exp_cont(conc_list[:3], t, prec)
+            case [{"KEY": "begin"}, {"EXP": e1}, *t, {"EXP": e2}, {"KEY": "end"}], 4:
+                return CST.exp_cont(conc_list, [], prec)
             #<Exp> ::= true
             case [{'EXP': {"ID": "true"}}, *t], 0:
                 return CST.exp_cont([{'EXP': "true"}], t, prec)
@@ -120,7 +130,7 @@ class CST:
 
     Raises exception if unable to make CST (list)
     '''
-    def gen_CST(conc_list, alarm=2):
+    def gen_CST(conc_list, alarm=2, debug=False):
         i = 0
         cst = conc_list
         while(i < alarm):
@@ -129,11 +139,14 @@ class CST:
             cst = CST.concrete_defs(cst, 1)
             cst = CST.concrete_defs(cst, 2)
             cst = CST.concrete_defs(cst, 3)
+            cst = CST.concrete_defs(cst, 4)
 
             i = i+1 if tmp_cst==cst else 0
 
         if len(cst) > 1:
-            raise Exception("Parser Error: Invalid syntax, unable to parse CST")
+            if(debug):
+                CST.display_tree(cst)
+            clean_excep("Parser Error: Invalid syntax, unable to parse CST")
 
         return cst
     '''
@@ -147,7 +160,7 @@ class CST:
         try:
             res[0]["EXP"]
         except:
-            raise Exception("Parser Error: Invalid syntax, Given a single keyword")
+            clean_excep("Parser Error: Invalid syntax, Given a single keyword")
 
         match res[0]["EXP"]:
             case {"NUMBER": _} | {"ID": _}:

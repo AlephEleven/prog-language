@@ -52,6 +52,8 @@ def expr(token):
             return expr_cls("ITE", (expr(v1), expr(v2), expr(v3)), f"ITE({est(v1)}, {est(v2)}, {est(v3)})")
         case {"ELet": [id, defin, body]}:
             return expr_cls("Let", (expr(id), expr(defin), expr(body)), f"Let({est(id)}, {est(defin)}, {est(body)})")
+        case {"ELine": vs}:
+            return expr_cls("Line", [expr(v) for v in vs], f"Line({[est(v) for v in vs]})")
         case v:
             return AST.abs_defs({"EXP": v})
 
@@ -68,6 +70,8 @@ class AST:
         match conc_tree:
             case {"EXP": v}:
                 match v:
+                    case [{"KEY": "begin"}, {"EXP": e1}, *t, {"KEY": "end"}]:
+                        return expr({"ELine": [list(e.values())[0] for e in v[1:len(v)-1]]})
                     case [{"KEY": "let"}, {"EXP": id}, {"EQUAL": eq}, {"EXP": defin}, {"KEY": "in"}, {"EXP": body}]:
                         return expr({"ELet": [id, defin, body]})
                     case [{"KEY": "if"}, {"EXP": e1}, {"KEY": "then"}, {"EXP": e2}, {"KEY": "else"}, {"EXP": e3}]:
