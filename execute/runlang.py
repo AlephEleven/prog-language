@@ -4,13 +4,20 @@ from interp import *
 
 args = sys.argv
 
-usage = f"Usage: {args[0]} filename [interp|parse|CST|tokens|all]"
+usage = f"Usage: {args[0]} filename [interp|parse|CST|tokens|all] (py)"
 
-if(len(args) != 3):
+if(len(args) < 3 or len(args) > 4):
     raise Exception(f"{usage}\n Error: too many/less flags specified ({len(args)-1})")
 
 F = open(args[1], "r")
 content = F.read()
+
+if(len(args)==4):
+    match args[3]:
+        case "py":
+            content = "begin"+content+"end"
+        case _:
+            raise Exception(f"{usage}\n Error: invalid third argument ({args[3]})")
 
 match args[2]:
     case "interp":
