@@ -1,8 +1,9 @@
 begin
 
-    let x = min(4,5) in x
-    let y = max(4,5) in y
+    let x = 5 in x
     
-    x+y+1
+    if iszero(x%2) 
+    then 1
+    else 2
 
 end

@@ -44,7 +44,7 @@ def concrete_type(token):
         case {"ID": _} | {"NUMBER": _}:
             return {"EXP": token}
         # <BOp> ::= <+|-|*|/>
-        case {"PLUS": _} | {"MINUS": _} | {"MULT": _} | {"DIV": _}:
+        case {"PLUS": _} | {"MINUS": _} | {"MULT": _} | {"DIV": _} | {"MOD": _}:
             return {"OP": token}
         case other:
             return other
@@ -121,7 +121,7 @@ class CST:
             #<Exp> ::= <Exp> <BOp> <Exp> (with PEMDAS precedence)
             case [{"EXP": e1}, {"OP": op}, {"EXP": e2}, *t], _ if prec > 1:
                 match op, prec:
-                    case {"MULT": _} | {"DIV": _}, 2:
+                    case {"MULT": _} | {"DIV": _} | {"MOD": _}, 2:
                         return CST.exp_cont(conc_list[:3], t, prec)
                     case {"PLUS": _} | {"MINUS": _}, 3:
                         return CST.exp_cont(conc_list[:3], t, prec)

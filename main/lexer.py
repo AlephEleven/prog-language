@@ -71,6 +71,7 @@ class Token:
             case "-": return {"MINUS": str_token}
             case "*": return {"MULT": str_token}
             case "/": return {"DIV": str_token}
+            case "%": return {"MOD": str_token}
             case "(": return {"LBRAC": str_token}
             case ")": return {"RBRAC": str_token}
             case "=": return {"EQUAL": str_token}

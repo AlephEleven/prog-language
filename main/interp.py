@@ -71,6 +71,12 @@ def eval_expr(exp):
                 ret_error("Division by zero")
             ans = v1/v2
             return return_type(ans,"NUMBER")
+        case "Mod":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, int_of_Int)
+            v2 = pass_eval(e2, int_of_Int)
+            ans = v1%v2
+            return return_type(ans,"NUMBER")
         case "IsZero?":
             (e) = exp.vals
             v = pass_eval(e, int_of_Int)

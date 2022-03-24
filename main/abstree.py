@@ -32,6 +32,8 @@ def expr(token):
             return expr_cls("Mul", (expr(v1), expr(v2)), f"Mul({est(v1)}, {est(v2)})")
         case {"EDiv": [v1, v2]}:
             return expr_cls("Div", (expr(v1), expr(v2)), f"Div({est(v1)}, {est(v2)})")
+        case {"EMod": [v1, v2]}:
+            return expr_cls("Mod", (expr(v1), expr(v2)), f"Mod({est(v1)}, {est(v2)})")
         case {"EIzero": v}:
             return expr_cls("IsZero?", expr(v), f"IsZero?({est(v)})")
         case {"ETrue": _}:
@@ -104,6 +106,8 @@ class AST:
                                 return expr({"EMul": [e1, e2]})
                             case {"DIV": _}:
                                 return expr({"EDiv": [e1, e2]})
+                            case {"MOD": _}:
+                                return expr({"EMod": [e1, e2]})
 
                     case _:
                         return expr_cls("invalid", {"str": -1}, "Invalid")
