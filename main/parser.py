@@ -63,6 +63,16 @@ class CST:
         return [concrete_type(i) for i in tk_list]
 
     '''
+    Checks if list of matchings all have keynames "EXP", used for making sure expressions are evaluated in begin <EXP> ... <EXP> end
+    '''
+    def is_exp_list(matching):
+        for tk in matching:
+            for key in tk:
+                if key != "EXP":
+                    return False
+        return True
+
+    '''
     Concrete Syntax for language, checks for pattern in concrete list, if none found, returns current index (head)
     loops through entire list
 
@@ -72,10 +82,8 @@ class CST:
         match conc_list, prec:
             case [], _:
                 return []
-            #<Exp> ::= begin <EXP> end
-            case [{"KEY": "begin"}, {"EXP": e1}, {"KEY": "end"}, *t], 4:
-                return CST.exp_cont(conc_list[:3], t, prec)
-            case [{"KEY": "begin"}, {"EXP": e1}, *t, {"EXP": e2}, {"KEY": "end"}], 4:
+            #<Exp> ::= begin <EXP> ... <EXP> end
+            case [{"KEY": "begin"}, *t, {"KEY": "end"}], 4 if CST.is_exp_list(t):
                 return CST.exp_cont(conc_list, [], prec)
             #<Exp> ::= true
             case [{'EXP': {"ID": "true"}}, *t], 0:

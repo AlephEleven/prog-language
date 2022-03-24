@@ -112,8 +112,8 @@ def eval_expr(exp):
             else: return eval_expr(e3)
         case "Let":
             (id, defin, body) = exp.vals
-            eval_expr(defin)
-            env = extend_env(id, defin, env)
+            d = return_val(eval_expr(defin))
+            env = extend_env(id, d, env)
             return eval_expr(body)
         case "Line":
             (es) = exp.vals
