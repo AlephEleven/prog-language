@@ -91,6 +91,9 @@ class CST:
             #<Exp> ::= false
             case [{'EXP': {"ID": "false"}}, *t], 0:
                 return CST.exp_cont([{'EXP': "false"}], t, prec)
+            #<Exp> ::= for <Exp>:<Exp> <Exp> endf
+            case [{"KEY": "for"}, {"EXP": e1}, {"COLON": cl}, {"EXP": e2}, {"EXP": e3}, {"KEY": "endf"}, *t], 1:
+                return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= let <Exp/Id> = <Exp> in <Exp>
             case [{"KEY": "let"}, {"EXP": id}, {"EQUAL": eq}, {"EXP": defin}, {"KEY": "in"}, {"EXP": body}, *t], 1:
                 return CST.exp_cont(conc_list[:6], t, prec)

@@ -125,8 +125,13 @@ def eval_expr(exp):
             (es) = exp.vals
             for e in es[:-1]:
                 eval_expr(e)
-
             return eval_expr(es[-1])
+        case "For":
+            (e1, e2, e3) = exp.vals
+            v1 = pass_eval(e1, int_of_Int)
+            v2 = pass_eval(e2, int_of_Int)
+            for i in range(v1, v2):
+                eval_expr(e3)
 
         case _:
             ret_error("Not implemented")

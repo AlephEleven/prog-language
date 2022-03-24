@@ -15,7 +15,7 @@ content = F.read()
 if(len(args)==4):
     match args[3]:
         case "py":
-            content = "begin"+content+"end"
+            content = "begin "+content+" end"
         case _:
             raise Exception(f"{usage}\n Error: invalid third argument ({args[3]})")
 

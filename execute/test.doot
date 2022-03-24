@@ -1,6 +1,8 @@
 
-let x = 5 in x
+let x = 4 in x
 
-if iszero(x%2) 
-then 1
-else 2
+for 1:2
+    let x = x+1 in x
+endf
+
+x
