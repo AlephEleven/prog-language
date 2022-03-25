@@ -31,6 +31,8 @@ Concrete Syntax:
 <Exp> ::= <Exp>[<Exp>]
 <Exp> ::= len(<Exp>)
 
+<Exp> ::= print(<Exp>)
+
 bool = true | false
 <BOp> ::= <+|-|*|/|%>
 
@@ -173,11 +175,17 @@ class CST:
             #<Exp> ::= len(<Exp>)
             case [{'KEY': "len"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:4], t, prec)
+            #<Exp> ::= print(<Exp>)
+            case [{'KEY': "print"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
+                return CST.exp_cont(conc_list[:4], t, prec)
             #<Exp> ::= max(<Exp>,<Exp>)
             case [{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= min(<Exp>,<Exp>)
             case [{'KEY': "min"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
+                return CST.exp_cont(conc_list[:6], t, prec)
+            #<Exp> ::= append(<Exp>,<Exp>)
+            case [{'KEY': "append"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= (<Exp>)
             case [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:

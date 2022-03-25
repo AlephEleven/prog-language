@@ -50,7 +50,9 @@ tk_ids = [
     "endf", 
     "while",
     "endw",
-    "len"
+    "len", 
+    "append",
+    "print"
 ]
 
 class Token:

@@ -50,6 +50,8 @@ def expr(token):
             return expr_cls("Abs", expr(v), f"Abs({est(v)})")
         case {"ELen": v}:
             return expr_cls("Len", expr(v), f"Len({est(v)})")
+        case {"EPrint": v}:
+            return expr_cls("Print", expr(v), f"Print({est(v)})")
         case {"EMax": [v1, v2]}:
             return expr_cls("Max", (expr(v1), expr(v2)), f"Max({est(v1)}, {est(v2)})")
         case {"EMin": [v1, v2]}:
@@ -68,6 +70,8 @@ def expr(token):
             return expr_cls("Arr", [expr(v) for v in vs], f"Arr({[est(v) for v in vs]})")
         case {"EArrAcc": [v1, v2]}:
             return expr_cls("ArrAcc", (expr(v1), expr(v2)), f"ArrAcc({est(v1)}, {est(v2)})")
+        case {"EAppend": [v1, v2]}:
+            return expr_cls("Append", (expr(v1), expr(v2)), f"Append({est(v1)}, {est(v2)})")
         case v:
             return AST.abs_defs({"EXP": v})
 
@@ -115,10 +119,14 @@ class AST:
                         return expr({"EAbs": e})
                     case [{"KEY": "len"}, {"LBRAC": _}, {"EXP": e}, {"RBRAC": _}]:
                         return expr({"ELen": e})
+                    case [{"KEY": "print"}, {"LBRAC": _}, {"EXP": e}, {"RBRAC": _}]:
+                        return expr({"EPrint": e})
                     case [{'KEY': "max"}, {"LBRAC": _}, {"EXP": e1}, {"COMMA": _}, {"EXP": e2}, {"RBRAC": _}]:
                         return expr({"EMax": [e1, e2]})
                     case [{'KEY': "min"}, {"LBRAC": _}, {"EXP": e1}, {"COMMA": _}, {"EXP": e2}, {"RBRAC": _}]:
                         return expr({"EMin": [e1, e2]})
+                    case [{'KEY': "append"}, {"LBRAC": _}, {"EXP": e1}, {"COMMA": _}, {"EXP": e2}, {"RBRAC": _}]:
+                        return expr({"EAppend": [e1, e2]})
                     case [{"LBRAC": _}, {"EXP": e}, {"RBRAC": _}] | {"EXP": e}:
                         return expr(e)
                     case [{"EXP": e1}, {"OP": op}, {"EXP": e2}]:

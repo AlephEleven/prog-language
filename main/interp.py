@@ -159,6 +159,10 @@ def eval_expr(exp):
             v = pass_eval(e, arr_of_Arr)
             ans = len(v)
             return return_type(ans,"NUMBER")
+        case "Print":
+            (e) = exp.vals
+            v = eval_expr(e)
+            print(result(v))
         case _:
             ret_error("Not implemented")
 
@@ -181,5 +185,9 @@ def parse(s):
 
 def interp(s):
     return f"Result: {result(eval_expr(AST.parse_CST(string_to_CST(s))))}"
+
+def get_glob_env():
+    global env
+    return env
 
 

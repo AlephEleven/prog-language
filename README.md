@@ -35,6 +35,8 @@ Concrete Syntax:
 <Exp> ::= <Exp>[<Exp>]
 <Exp> ::= len(<Exp>)
 
+<Exp> ::= print(<Exp>)
+
 bool = true | false
 <BOp> ::= <+|-|*|/|%>
 
