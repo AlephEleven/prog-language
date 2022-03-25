@@ -31,6 +31,8 @@ Concrete Syntax:
 <Exp> ::= <Exp>[<Exp>]
 <Exp> ::= len(<Exp>)
 <Exp> ::= append(<Exp>, <Exp>)
+<Exp> ::= pop(<Exp>)
+<Exp> ::= push(<Exp>, <Exp>)
 
 <Exp> ::= print(<Exp>)
 
@@ -173,6 +175,12 @@ class CST:
             #<Exp> ::= print(<Exp>)
             case [{'KEY': "print"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:4], t, prec)
+            #<Exp> ::= pop(<Exp>)
+            case [{'KEY': "pop"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
+                return CST.exp_cont(conc_list[:4], t, prec)
+            #<Exp> ::= push(<Exp/Arr>, <Exp>)
+            case [{'KEY': "push"}, {"LBRAC": lp}, {"EXP": e}, {"COMMA": _} ,{"EXP": e2}, {"RBRAC": rp}, *t], 1:
+                return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= max(<Exp>,<Exp>)
             case [{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:6], t, prec)

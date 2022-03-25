@@ -52,7 +52,9 @@ tk_ids = [
     "endw",
     "len", 
     "append",
-    "print"
+    "print",
+    "pop",
+    "push"
 ]
 
 class Token:

@@ -8,7 +8,7 @@ Here is where we want to finally evaluate expressions that come from the AST
 '''
 
 #evaluates an expression, then binds it
-def pass_eval(exp, f):
+def pass_eval(exp, f=lambda x:x):
     return pass_exp(eval_expr(exp), f).vals
 
 #returns result with type
@@ -163,9 +163,19 @@ def eval_expr(exp):
             (e1, e2) = exp.vals
             v1 = pass_eval(e1, arr_of_Arr)
             v2 = pass_eval(e2, arr_of_Arr)
-            ans = v1+v2
-            ans_wrap = expr_cls("Arr", [ele for ele in ans], f"Arr({[est_no_expr(ele) for ele in ans]})")
-            return eval_expr(ans_wrap)
+            ans = update_arr(v1+v2)
+            return eval_expr(ans)
+        case "Pop":
+            (e) = exp.vals
+            v = pass_eval(e, arr_of_Arr)
+            ans = update_arr(v[1:])
+            return eval_expr(ans)
+        case "Push":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, arr_of_Arr)
+            v2 = e2
+            ans = update_arr([v2]+v1)
+            return eval_expr(ans)
         case "Print":
             (e) = exp.vals
             v = eval_expr(e)

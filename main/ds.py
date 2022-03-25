@@ -1,4 +1,4 @@
-from abstree import expr_cls
+from abstree import expr_cls, est_no_expr
 import sys
 
 def clean_excep(s):
@@ -108,3 +108,6 @@ def arr_of_Arr(exp):
             return exp
         case _:
             raise Exception("Expected an Arr!")
+
+def update_arr(ans):
+    return expr_cls("Arr", [ele for ele in ans], f"Arr({[est_no_expr(ele) for ele in ans]})")

@@ -17,8 +17,6 @@ interpreter portion heavily based on course textbook: https://github.com/ebonell
 ```
 Concrete Syntax:
 
-Concrete Syntax:
-
 <Exp> ::= <ID> | <NUMBER> | {bool}
 <Exp> ::= (<Exp>) | (-<Exp>)
 <Exp> ::= <Exp> <OP> <Exp>
@@ -35,6 +33,8 @@ Concrete Syntax:
 <Exp> ::= <Exp>[<Exp>]
 <Exp> ::= len(<Exp>)
 <Exp> ::= append(<Exp>, <Exp>)
+<Exp> ::= pop(<Exp>)
+<Exp> ::= push(<Exp>, <Exp>)
 
 <Exp> ::= print(<Exp>)
 
