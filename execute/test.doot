@@ -1,4 +1,5 @@
 
-let x = (-1) in x
+let y = 1 in y
+let x = [y,2,3] in x
 
-iszero(x+1)
+x[0]+len(x)

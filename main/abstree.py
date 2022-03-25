@@ -48,6 +48,8 @@ def expr(token):
             return expr_cls("Not", (expr(v)), f"Not({est(v)})")
         case {"EAbs": v}:
             return expr_cls("Abs", expr(v), f"Abs({est(v)})")
+        case {"ELen": v}:
+            return expr_cls("Len", expr(v), f"Len({est(v)})")
         case {"EMax": [v1, v2]}:
             return expr_cls("Max", (expr(v1), expr(v2)), f"Max({est(v1)}, {est(v2)})")
         case {"EMin": [v1, v2]}:
@@ -62,6 +64,10 @@ def expr(token):
             return expr_cls("For", (expr(v1), expr(v2), expr(v3)), f"For({est(v1)}, {est(v2)}, {est(v3)})")
         case {"EWhile": [v1, v2]}:
             return expr_cls("While", (expr(v1), expr(v2)), f"While({est(v1)}, {est(v2)})")
+        case {"EArr": vs}:
+            return expr_cls("Arr", [expr(v) for v in vs], f"Arr({[est(v) for v in vs]})")
+        case {"EArrAcc": [v1, v2]}:
+            return expr_cls("ArrAcc", (expr(v1), expr(v2)), f"ArrAcc({est(v1)}, {est(v2)})")
         case v:
             return AST.abs_defs({"EXP": v})
 
@@ -78,11 +84,16 @@ class AST:
         match conc_tree:
             case {"EXP": v}:
                 match v:
+                    case [{"EXP": e1}, {"LSBRAC": _}, {"EXP": e2}, {"RSBRAC": _}]:
+                        return expr({"EArrAcc": [e1, e2]})
+                    case [{"LSBRAC": _}, *t, {"RSBRAC": _}]:
+                        arr = v[1:len(v)-1]
+                        return expr({"EArr": [list(e.values())[0] for e in arr[::2]]})
                     case [{"KEY": "while"}, {"EXP": e1}, {"EXP": e2}, {"KEY": "endw"}]:
                         return expr({"EWhile": [e1, e2]})
                     case [{"KEY": "for"}, {"EXP": e1}, {"COLON": cl}, {"EXP": e2}, {"EXP": e3}, {"KEY": "endf"}]:
                         return expr({"EFor": [e1, e2, e3]})
-                    case [{"KEY": "begin"}, {"EXP": e1}, *t, {"KEY": "end"}]:
+                    case [{"KEY": "begin"}, *t, {"KEY": "end"}]:
                         return expr({"ELine": [list(e.values())[0] for e in v[1:len(v)-1]]})
                     case [{"KEY": "let"}, {"EXP": id}, {"EQUAL": eq}, {"EXP": defin}, {"KEY": "in"}, {"EXP": body}]:
                         return expr({"ELet": [id, defin, body]})
@@ -102,6 +113,8 @@ class AST:
                         return expr({"EFalse": "false"})
                     case [{"KEY": "abs"}, {"LBRAC": _}, {"EXP": e}, {"RBRAC": _}]:
                         return expr({"EAbs": e})
+                    case [{"KEY": "len"}, {"LBRAC": _}, {"EXP": e}, {"RBRAC": _}]:
+                        return expr({"ELen": e})
                     case [{'KEY': "max"}, {"LBRAC": _}, {"EXP": e1}, {"COMMA": _}, {"EXP": e2}, {"RBRAC": _}]:
                         return expr({"EMax": [e1, e2]})
                     case [{'KEY': "min"}, {"LBRAC": _}, {"EXP": e1}, {"COMMA": _}, {"EXP": e2}, {"RBRAC": _}]:

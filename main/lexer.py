@@ -49,7 +49,8 @@ tk_ids = [
     "for",
     "endf", 
     "while",
-    "endw"
+    "endw",
+    "len"
 ]
 
 class Token:
@@ -82,6 +83,8 @@ class Token:
             case "=": return {"EQUAL": str_token}
             case ",": return {"COMMA": str_token}
             case ":": return {"COLON": str_token}
+            case "[": return {"LSBRAC": str_token}
+            case "]": return {"RSBRAC": str_token}
             case _:
                 clean_excep(f"Lexer Error: Invalid string-rep token found at offset {offset}: <{str_token}>")
 

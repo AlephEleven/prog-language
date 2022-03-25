@@ -101,3 +101,10 @@ def bool_of_Bool(exp):
             return exp
         case _:
             raise Exception("Expected an Bool!")
+
+def arr_of_Arr(exp):
+    match exp.id:
+        case "Arr":
+            return exp
+        case _:
+            raise Exception("Expected an Arr!")

@@ -78,19 +78,33 @@ class CST:
                     return False
         return True
 
-    def exp_list_to_tk(matching, end_tk, end_v):
+    def exp_list_to_tk_be(matching):
         i = 1
         for tk in matching:
             for key in tk:
                 i += 1
                 #print(key)
 
-                if key !="EXP" and key==end_tk and tk[end_tk]==end_v:
+                if key !="EXP" and key=="KEY" and tk["KEY"]=="end":
                     return (True, i)
 
                 if key !="EXP":
                     return (False, i)
 
+        return (False, i)
+    
+    def exp_list_to_tk_arr(matching):
+        i = 1
+        exp_com = 0
+        exp_com_l = ["EXP", "COMMA"]
+        for tk in matching:
+            for key in tk:
+                i += 1
+                if key != exp_com_l[exp_com%2] and key=="RSBRAC":
+                    return (True, i)
+                if key != exp_com_l[exp_com%2]:
+                    return (False, i)
+                exp_com += 1
         return (False, i)
 
     '''
@@ -103,9 +117,19 @@ class CST:
         match conc_list, prec:
             case [], _:
                 return []
-            #<Exp> ::= begin <EXP> ... <EXP> end
+            #<Exp> ::= <Exp>[<Exp>]
+            case [{"EXP": e1}, {"LSBRAC": ls}, {"EXP": e2}, {"RSBRAC": rs}, *t], 0:
+                return CST.exp_cont(conc_list[:4], t, prec)
+            #<Exp> ::= [<Exp>, ..., <Exp>]
+            case [{"LSBRAC": ls}, *t], 1:
+                exps = CST.exp_list_to_tk_arr(t)
+                if(exps[0]):
+                    return CST.exp_cont(conc_list[:exps[1]], conc_list[exps[1]:], prec)
+                else:
+                    return [{"LSBRAC": ls}]+CST.concrete_defs(t, prec)
+            #<Exp> ::= begin <Exp> ... <Exp> end
             case [{"KEY": "begin"}, *t], 4:
-                exps = CST.exp_list_to_tk(t, "KEY", "end")
+                exps = CST.exp_list_to_tk_be(t)
                 if(exps[0]):
                     return CST.exp_cont(conc_list[:exps[1]], conc_list[exps[1]:], prec)
                 else:
@@ -142,6 +166,9 @@ class CST:
                 return CST.exp_cont(conc_list[:4], t, prec)
             #<Exp> ::= iszero(<Exp>)
             case [{'KEY': "iszero"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
+                return CST.exp_cont(conc_list[:4], t, prec)
+            #<Exp> ::= len(<Exp>)
+            case [{'KEY': "len"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:4], t, prec)
             #<Exp> ::= max(<Exp>,<Exp>)
             case [{'KEY': "max"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": com}, {"EXP": e2}, {"RBRAC": rp}, *t], 1:

@@ -45,6 +45,9 @@ def eval_expr(exp):
         case "Bool":
             (n) = exp
             return return_exp(n)
+        case "Arr":
+            (n) = exp
+            return return_exp(n)
         case "Add":
             (e1, e2) = exp.vals
             v1 = pass_eval(e1, int_of_Int)
@@ -143,6 +146,19 @@ def eval_expr(exp):
             if(v1):
                 eval_expr(e2)
                 eval_expr(exp)
+        case "ArrAcc":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, arr_of_Arr)
+            v2 = pass_eval(e2, int_of_Int)
+            if(v2>=len(v1) or v2<0):
+                ret_error("Array out of bounds")
+            ans = v1[v2]
+            return eval_expr(ans)
+        case "Len":
+            (e) = exp.vals
+            v = pass_eval(e, arr_of_Arr)
+            ans = len(v)
+            return return_type(ans,"NUMBER")
         case _:
             ret_error("Not implemented")
 
