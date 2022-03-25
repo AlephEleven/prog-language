@@ -14,44 +14,39 @@ interpreter portion heavily based on course textbook: https://github.com/ebonell
 
 ## CST
 
-Exp ::= ID | NUMBER | bool
+```
+<Exp> ::= <ID> | <NUMBER> | {bool}
+<Exp> ::= (<Exp>)
+<Exp> ::= <Exp> <OP> <Exp>
+<Exp> ::= <Exp>
+<Exp> ::= <Exp> and <Exp> | <Exp> or <Exp>
+<Exp> ::= iszero(<Exp>)
+<Exp> ::= abs(<Exp>)
+<Exp> ::= max(<Exp>,<Exp>) | min(<Exp>,<Exp>)
+<Exp> ::= begin <Exp> ... <Exp> end
+<Exp> ::= for <Exp>:<Exp> <Exp>
 
-Exp ::= (Exp)
 
-Exp ::= Exp OP Exp
+bool = true | false
+<BOp> ::= <+|-|*|/|%>
 
-Exp ::= Exp and Exp
-
-Exp ::= Exp or Exp
-
-Exp ::= iszero(Exp)
-
-Exp ::= abs(Exp)
-
-Exp ::= max(Exp, Exp) | min(Exp, Exp)
-
-Exp ::= if Exp then Exp else Exp
-
-Exp ::= let Exp/ID = Exp in Exp
-
-Exp ::= Exp
-
-OP ::= + | - | * | /
-
-bool ::= true | false
 
 Precendence:
-1.  (), func()
-2.  Mult/Div
-3.  Add/Sub
+1 - (), func()
+2 - Mult/Div/Mod
+3 - Add/Sub
+4 - begin end
+```
 
 ## Testing
 
 Via execute folder in command line:
 
 ```
-$ python3.10 runlang.py filename [interp|parse|CST|tokens]
+$ python3.10 runlang.py filename [interp|parse|CST|tokens] (py)
 ```
+
+Note: optional "py" tag puts a begin end wrapper between the input file, alike to pythonic code
 
 Via interp.py:
 
