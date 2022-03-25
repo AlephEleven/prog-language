@@ -44,6 +44,8 @@ def expr(token):
             return expr_cls("And", (expr(v1), expr(v2)), f"And({est(v1)}, {est(v2)})")
         case {"EOr": [v1, v2]}:
             return expr_cls("Or", (expr(v1), expr(v2)), f"Or({est(v1)}, {est(v2)})")
+        case {"ENot": v}:
+            return expr_cls("Not", (expr(v)), f"Not({est(v)})")
         case {"EAbs": v}:
             return expr_cls("Abs", expr(v), f"Abs({est(v)})")
         case {"EMax": [v1, v2]}:
@@ -58,6 +60,8 @@ def expr(token):
             return expr_cls("Line", [expr(v) for v in vs], f"Line({[est(v) for v in vs]})")
         case {"EFor": [v1, v2, v3]}:
             return expr_cls("For", (expr(v1), expr(v2), expr(v3)), f"For({est(v1)}, {est(v2)}, {est(v3)})")
+        case {"EWhile": [v1, v2]}:
+            return expr_cls("While", (expr(v1), expr(v2)), f"While({est(v1)}, {est(v2)})")
         case v:
             return AST.abs_defs({"EXP": v})
 
@@ -74,6 +78,8 @@ class AST:
         match conc_tree:
             case {"EXP": v}:
                 match v:
+                    case [{"KEY": "while"}, {"EXP": e1}, {"EXP": e2}, {"KEY": "endw"}]:
+                        return expr({"EWhile": [e1, e2]})
                     case [{"KEY": "for"}, {"EXP": e1}, {"COLON": cl}, {"EXP": e2}, {"EXP": e3}, {"KEY": "endf"}]:
                         return expr({"EFor": [e1, e2, e3]})
                     case [{"KEY": "begin"}, {"EXP": e1}, *t, {"KEY": "end"}]:
@@ -86,6 +92,8 @@ class AST:
                         return expr({"EAnd": [e1, e2]})
                     case [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}]:
                         return expr({"EOr": [e1, e2]})
+                    case [{"KEY": "not"}, {"EXP": e}]:
+                        return expr({"ENot": e})
                     case [{"KEY": "iszero"}, {"LBRAC": _}, {"EXP": e}, {"RBRAC": _}]:
                         return expr({"EIzero": e})
                     case [{"EXP": "true"}]:

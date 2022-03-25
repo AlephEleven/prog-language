@@ -94,6 +94,11 @@ def eval_expr(exp):
             v2 = pass_eval(e2, bool_of_Bool)
             ans = v1 or v2
             return return_type(ans,"BOOL")
+        case "Not":
+            (e) = exp.vals
+            v = pass_eval(e, bool_of_Bool)
+            ans = not v
+            return return_type(ans,"BOOL")
         case "Abs":
             (e) = exp.vals
             v = pass_eval(e, int_of_Int)
@@ -132,7 +137,12 @@ def eval_expr(exp):
             v2 = pass_eval(e2, int_of_Int)
             for i in range(v1, v2):
                 eval_expr(e3)
-
+        case "While":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, bool_of_Bool)
+            if(v1):
+                eval_expr(e2)
+                eval_expr(exp)
         case _:
             ret_error("Not implemented")
 

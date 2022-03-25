@@ -19,12 +19,13 @@ Concrete Syntax:
 <Exp> ::= (<Exp>)
 <Exp> ::= <Exp> <OP> <Exp>
 <Exp> ::= <Exp>
-<Exp> ::= <Exp> and <Exp> | <Exp> or <Exp>
+<Exp> ::= <Exp> and <Exp> | <Exp> or <Exp> | not <Exp>
 <Exp> ::= iszero(<Exp>)
 <Exp> ::= abs(<Exp>)
 <Exp> ::= max(<Exp>,<Exp>) | min(<Exp>,<Exp>)
 <Exp> ::= begin <Exp> ... <Exp> end
-<Exp> ::= for <Exp>:<Exp> <Exp>
+<Exp> ::= for <Exp>:<Exp> <Exp> endf
+<Exp> ::= while <Exp> <Exp> endw
 
 
 bool = true | false
@@ -109,9 +110,12 @@ class CST:
                     return CST.exp_cont(conc_list[:exps[1]], conc_list[exps[1]:], prec)
                 else:
                     return [{"KEY": "begin"}]+CST.concrete_defs(t, prec)
-            #<Exp> ::= for <Exp>:<Exp> <Exp> endf
+            #<Exp> ::= for <Exp/Int>:<Exp/Int> <Exp> endf
             case [{"KEY": "for"}, {"EXP": e1}, {"COLON": cl}, {"EXP": e2}, {"EXP": e3}, {"KEY": "endf"}, *t], 4:
                 return CST.exp_cont(conc_list[:6], t, prec)
+            #<Exp> ::= while <Exp/Bool> <Exp> endw
+            case [{"KEY": "while"}, {"EXP": e1}, {"EXP": e2}, {"KEY": "endw"}, *t], 4:
+                return CST.exp_cont(conc_list[:4], t, prec)
             #<Exp> ::= true
             case [{'EXP': {"ID": "true"}}, *t], 0:
                 return CST.exp_cont([{'EXP': "true"}], t, prec)
@@ -130,6 +134,9 @@ class CST:
             #<Exp> ::= <Exp> or <Exp>
             case [{"EXP": e1}, {"KEY": "or"}, {"EXP": e2}, *t], 1:
                 return CST.exp_cont(conc_list[:3], t, prec)
+            #<Exp> ::= not <Exp>
+            case [{"KEY": "not"}, {"EXP": e}, *t], 1:
+                return CST.exp_cont(conc_list[:2], t, prec)
             #<Exp> ::= abs(<Exp>)
             case [{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:4], t, prec)
@@ -165,7 +172,7 @@ class CST:
 
     Raises exception if unable to make CST (list)
     '''
-    def gen_CST(conc_list, alarm=2, debug=True):
+    def gen_CST(conc_list, alarm=2, debug=False):
         i = 0
         cst = conc_list
         while(i < alarm):

@@ -38,6 +38,7 @@ tk_ids = [
     "iszero",
     "and",
     "or",
+    "not",
     "if",
     "then",
     "else",
@@ -46,7 +47,9 @@ tk_ids = [
     "begin",
     "end",
     "for",
-    "endf"
+    "endf", 
+    "while",
+    "endw"
 ]
 
 class Token:

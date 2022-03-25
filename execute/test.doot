@@ -1,17 +1,11 @@
+let x = 100 in x
+let y = 0 in y
 
-let x = 1 in x
-x+2
-
-begin
-    x
-    let y = 2 in y
-
+while (not iszero(x))
     begin
-        let z = 3 in z
+        let x = x-1 in x
+        let y = y+1 in y
     end
+endw
 
-    let a = 4 in a
-
-end
-
-iszero(max(x+y+z+a, 12)-12) and false
+y
