@@ -1,8 +1,17 @@
 
-let x = 4 in x
+let x = 1 in x
+x+2
 
-for 1:2
-    let x = x+1 in x
-endf
+begin
+    x
+    let y = 2 in y
 
-x
+    begin
+        let z = 3 in z
+    end
+
+    let a = 4 in a
+
+end
+
+iszero(max(x+y+z+a, 12)-12) and false

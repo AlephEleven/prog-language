@@ -4,6 +4,9 @@ import sys
 def clean_excep(s):
     sys.tracebacklimit = 0
     raise Exception(s)
+
+def cst_error():
+    return clean_excep("Parser Error: Invalid syntax, unable to parse CST")
 '''
 Given a list of tokens, we want to use a set of concrete syntax rules in order to create a
 syntax tree, and finalize it by making an AST
@@ -16,21 +19,23 @@ Concrete Syntax:
 <Exp> ::= (<Exp>)
 <Exp> ::= <Exp> <OP> <Exp>
 <Exp> ::= <Exp>
-<Exp> ::= <Exp> and <Exp>
-<Exp> ::= <Exp> or <Exp>
+<Exp> ::= <Exp> and <Exp> | <Exp> or <Exp>
 <Exp> ::= iszero(<Exp>)
 <Exp> ::= abs(<Exp>)
-<Exp> ::= max(<Exp>) | min(<Exp>)
+<Exp> ::= max(<Exp>,<Exp>) | min(<Exp>,<Exp>)
+<Exp> ::= begin <Exp> ... <Exp> end
+<Exp> ::= for <Exp>:<Exp> <Exp>
 
 
 bool = true | false
-<BOp> ::= <+|-|*|/>
+<BOp> ::= <+|-|*|/|%>
 
 
 Precendence:
 1 - (), func()
-2 - Mult/Div
+2 - Mult/Div/Mod
 3 - Add/Sub
+4 - begin end
 '''
 
 
@@ -72,6 +77,21 @@ class CST:
                     return False
         return True
 
+    def exp_list_to_tk(matching, end_tk, end_v):
+        i = 1
+        for tk in matching:
+            for key in tk:
+                i += 1
+                #print(key)
+
+                if key !="EXP" and key==end_tk and tk[end_tk]==end_v:
+                    return (True, i)
+
+                if key !="EXP":
+                    return (False, i)
+
+        return (False, i)
+
     '''
     Concrete Syntax for language, checks for pattern in concrete list, if none found, returns current index (head)
     loops through entire list
@@ -83,17 +103,21 @@ class CST:
             case [], _:
                 return []
             #<Exp> ::= begin <EXP> ... <EXP> end
-            case [{"KEY": "begin"}, *t, {"KEY": "end"}], 4 if CST.is_exp_list(t):
-                return CST.exp_cont(conc_list, [], prec)
+            case [{"KEY": "begin"}, *t], 4:
+                exps = CST.exp_list_to_tk(t, "KEY", "end")
+                if(exps[0]):
+                    return CST.exp_cont(conc_list[:exps[1]], conc_list[exps[1]:], prec)
+                else:
+                    return [{"KEY": "begin"}]+CST.concrete_defs(t, prec)
+            #<Exp> ::= for <Exp>:<Exp> <Exp> endf
+            case [{"KEY": "for"}, {"EXP": e1}, {"COLON": cl}, {"EXP": e2}, {"EXP": e3}, {"KEY": "endf"}, *t], 4:
+                return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= true
             case [{'EXP': {"ID": "true"}}, *t], 0:
                 return CST.exp_cont([{'EXP': "true"}], t, prec)
             #<Exp> ::= false
             case [{'EXP': {"ID": "false"}}, *t], 0:
                 return CST.exp_cont([{'EXP': "false"}], t, prec)
-            #<Exp> ::= for <Exp>:<Exp> <Exp> endf
-            case [{"KEY": "for"}, {"EXP": e1}, {"COLON": cl}, {"EXP": e2}, {"EXP": e3}, {"KEY": "endf"}, *t], 1:
-                return CST.exp_cont(conc_list[:6], t, prec)
             #<Exp> ::= let <Exp/Id> = <Exp> in <Exp>
             case [{"KEY": "let"}, {"EXP": id}, {"EQUAL": eq}, {"EXP": defin}, {"KEY": "in"}, {"EXP": body}, *t], 1:
                 return CST.exp_cont(conc_list[:6], t, prec)
@@ -141,7 +165,7 @@ class CST:
 
     Raises exception if unable to make CST (list)
     '''
-    def gen_CST(conc_list, alarm=2, debug=False):
+    def gen_CST(conc_list, alarm=2, debug=True):
         i = 0
         cst = conc_list
         while(i < alarm):
@@ -157,7 +181,7 @@ class CST:
         if len(cst) > 1:
             if(debug):
                 CST.display_tree(cst)
-            clean_excep("Parser Error: Invalid syntax, unable to parse CST")
+            cst_error()
 
         return cst
     '''
