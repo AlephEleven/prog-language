@@ -1,11 +1,4 @@
-let x = 100 in x
-let y = 0 in y
 
-while (not iszero(x))
-    begin
-        let x = x-1 in x
-        let y = y+1 in y
-    end
-endw
+let x = (-1) in x
 
-y
+iszero(x+1)

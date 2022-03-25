@@ -15,16 +15,19 @@ interpreter portion heavily based on course textbook: https://github.com/ebonell
 ## CST
 
 ```
+Concrete Syntax:
+
 <Exp> ::= <ID> | <NUMBER> | {bool}
-<Exp> ::= (<Exp>)
+<Exp> ::= (<Exp>) | (-<Exp>)
 <Exp> ::= <Exp> <OP> <Exp>
 <Exp> ::= <Exp>
-<Exp> ::= <Exp> and <Exp> | <Exp> or <Exp>
+<Exp> ::= <Exp> and <Exp> | <Exp> or <Exp> | not <Exp>
 <Exp> ::= iszero(<Exp>)
 <Exp> ::= abs(<Exp>)
 <Exp> ::= max(<Exp>,<Exp>) | min(<Exp>,<Exp>)
 <Exp> ::= begin <Exp> ... <Exp> end
-<Exp> ::= for <Exp>:<Exp> <Exp>
+<Exp> ::= for <Exp>:<Exp> <Exp> endf
+<Exp> ::= while <Exp> <Exp> endw
 
 
 bool = true | false

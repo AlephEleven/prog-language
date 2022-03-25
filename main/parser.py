@@ -16,7 +16,7 @@ syntax tree, and finalize it by making an AST
 Concrete Syntax:
 
 <Exp> ::= <ID> | <NUMBER> | {bool}
-<Exp> ::= (<Exp>)
+<Exp> ::= (<Exp>) | (-<Exp>)
 <Exp> ::= <Exp> <OP> <Exp>
 <Exp> ::= <Exp>
 <Exp> ::= <Exp> and <Exp> | <Exp> or <Exp> | not <Exp>
@@ -152,6 +152,9 @@ class CST:
             #<Exp> ::= (<Exp>)
             case [{"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:3], t, prec)
+            #<Exp> ::= (-<Exp>)
+            case [{"LBRAC": lp}, {"OP": {"MINUS": _}}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
+                return [{"LBRAC": lp}, {"EXP": {"NUMBER": 0}}, {"OP": {"MINUS": "-"}}, {"EXP": e}, {"RBRAC": rp}]+CST.concrete_defs(t, prec)
             #<Exp> ::= <Exp> <BOp> <Exp> (with PEMDAS precedence)
             case [{"EXP": e1}, {"OP": op}, {"EXP": e2}, *t], _ if prec > 1:
                 match op, prec:
