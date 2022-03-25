@@ -27,6 +27,9 @@ Concrete Syntax:
 <Exp> ::= for <Exp>:<Exp> <Exp> endf
 <Exp> ::= while <Exp> <Exp> endw
 
+<Exp> ::= [<Exp>, ..., <Exp>]
+<Exp> ::= <Exp>[<Exp>]
+<Exp> ::= len(<Exp>)
 
 bool = true | false
 <BOp> ::= <+|-|*|/|%>
