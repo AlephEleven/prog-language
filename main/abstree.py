@@ -11,6 +11,9 @@ def expr_cls(name, params, str_rep):
 def est(expr_obj):
     return expr(expr_obj).str
 
+def est_no_expr(expr_obj):
+    return expr_obj.str
+
 '''
 List of expression in Abstract Syntax
 

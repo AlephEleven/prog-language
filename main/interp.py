@@ -159,6 +159,13 @@ def eval_expr(exp):
             v = pass_eval(e, arr_of_Arr)
             ans = len(v)
             return return_type(ans,"NUMBER")
+        case "Append":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, arr_of_Arr)
+            v2 = pass_eval(e2, arr_of_Arr)
+            ans = v1+v2
+            ans_wrap = expr_cls("Arr", [ele for ele in ans], f"Arr({[est_no_expr(ele) for ele in ans]})")
+            return eval_expr(ans_wrap)
         case "Print":
             (e) = exp.vals
             v = eval_expr(e)

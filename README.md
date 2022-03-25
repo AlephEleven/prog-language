@@ -34,6 +34,7 @@ Concrete Syntax:
 <Exp> ::= [<Exp>, ..., <Exp>]
 <Exp> ::= <Exp>[<Exp>]
 <Exp> ::= len(<Exp>)
+<Exp> ::= append(<Exp>, <Exp>)
 
 <Exp> ::= print(<Exp>)
 

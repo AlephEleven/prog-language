@@ -30,6 +30,7 @@ Concrete Syntax:
 <Exp> ::= [<Exp>, ..., <Exp>]
 <Exp> ::= <Exp>[<Exp>]
 <Exp> ::= len(<Exp>)
+<Exp> ::= append(<Exp>, <Exp>)
 
 <Exp> ::= print(<Exp>)
 
@@ -76,13 +77,7 @@ class CST:
     '''
     Checks if list of matchings all have keynames "EXP", used for making sure expressions are evaluated in begin <EXP> ... <EXP> end
     '''
-    def is_exp_list(matching):
-        for tk in matching:
-            for key in tk:
-                if key != "EXP":
-                    return False
-        return True
-
+    
     def exp_list_to_tk_be(matching):
         i = 1
         for tk in matching:
