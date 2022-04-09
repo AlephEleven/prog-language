@@ -1,9 +1,2 @@
-
-
-let x = newref(2) in x
-
-let y = newref(3) in y
-
-setref(y, deref(y)-1)
-
-deref(x)+deref(y)
+let y = newref([newref(1),newref(2),newref(3)]) in y
+let z = deref(y) in deref(z[0])+deref(z[1])+deref(z[2])

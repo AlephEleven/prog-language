@@ -49,7 +49,11 @@ def eval_expr(exp):
             return return_exp(n)
         case "Arr":
             (n) = exp
-            return return_exp(n)
+            new_vals = []
+            for i in n.vals:
+                new_vals += [return_val(eval_expr(i))]
+            ans = update_arr(new_vals)
+            return return_exp(ans)
         case "Add":
             (e1, e2) = exp.vals
             v1 = pass_eval(e1, int_of_Int)
@@ -133,6 +137,8 @@ def eval_expr(exp):
             return eval_expr(body)
         case "Line":
             (es) = exp.vals
+            if len(es)==0:
+                return return_exp(expr_cls("Unit", "", "Unit()"))
             for e in es[:-1]:
                 eval_expr(e)
             return eval_expr(es[-1])
@@ -193,14 +199,14 @@ def eval_expr(exp):
             (e) = exp.vals
             v = pass_eval(e, int_of_Ref)
             ans = g_store.deref(v.vals)
-            return eval_expr(ans)
+            return return_exp(ans)
         case "SetRef":
             (e1, e2) = exp.vals
             v1 = pass_eval(e1, int_of_Ref)
             v2 = return_val(eval_expr(e2))
             g_store.setref(v1.vals, v2)
             ans = expr_cls("Unit", "", "Unit()")
-            return 1
+            return return_exp(ans)
         case _:
             ret_error("Not implemented")
 
