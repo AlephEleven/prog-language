@@ -79,6 +79,12 @@ def expr(token):
             return expr_cls("ArrAcc", (expr(v1), expr(v2)), f"ArrAcc({est(v1)}, {est(v2)})")
         case {"EAppend": [v1, v2]}:
             return expr_cls("Append", (expr(v1), expr(v2)), f"Append({est(v1)}, {est(v2)})")
+        case {"ENewref": v}:
+            return expr_cls("NewRef", expr(v), f"NewRef({est(v)})")
+        case {"EDeref": v}:
+            return expr_cls("DeRef", expr(v), f"DeRef({est(v)})")
+        case {"ESetref": [v1, v2]}:
+            return expr_cls("SetRef", (expr(v1), expr(v2)), f"SetRef({est(v1)}, {est(v2)})") 
         case v:
             return AST.abs_defs({"EXP": v})
 
@@ -95,6 +101,12 @@ class AST:
         match conc_tree:
             case {"EXP": v}:
                 match v:
+                    case [{'KEY': "newref"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]:
+                        return expr({"ENewref": e})
+                    case [{'KEY': "deref"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}]:
+                        return expr({"EDeref": e})
+                    case [{'KEY': "setref"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": _} ,{"EXP": e2}, {"RBRAC": rp}]:
+                        return expr({"ESetref": [e1, e2]})
                     case [{"EXP": e1}, {"LSBRAC": _}, {"EXP": e2}, {"RSBRAC": _}]:
                         return expr({"EArrAcc": [e1, e2]})
                     case [{"LSBRAC": _}, *t, {"RSBRAC": _}]:

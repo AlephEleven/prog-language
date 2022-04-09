@@ -34,6 +34,8 @@ Concrete Syntax:
 <Exp> ::= pop(<Exp>)
 <Exp> ::= push(<Exp>, <Exp>)
 
+<Exp> ::= newref(<Exp>) | deref(<Exp>) | setref(<Exp>, <Exp>)
+
 <Exp> ::= print(<Exp>)
 
 bool = true | false
@@ -163,6 +165,17 @@ class CST:
             #<Exp> ::= not <Exp>
             case [{"KEY": "not"}, {"EXP": e}, *t], 1:
                 return CST.exp_cont(conc_list[:2], t, prec)
+
+            #<Exp> ::= newref(<Exp>)
+            case [{'KEY': "newref"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
+                return CST.exp_cont(conc_list[:4], t, prec)
+            #<Exp> ::= deref(<Exp>)
+            case [{'KEY': "deref"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
+                return CST.exp_cont(conc_list[:4], t, prec)
+            #<Exp> ::= setref(<Exp>, <Exp>)
+            case [{'KEY': "setref"}, {"LBRAC": lp}, {"EXP": e1}, {"COMMA": _} ,{"EXP": e2}, {"RBRAC": rp}, *t], 1:
+                return CST.exp_cont(conc_list[:6], t, prec)
+
             #<Exp> ::= abs(<Exp>)
             case [{'KEY': "abs"}, {"LBRAC": lp}, {"EXP": e}, {"RBRAC": rp}, *t], 1:
                 return CST.exp_cont(conc_list[:4], t, prec)

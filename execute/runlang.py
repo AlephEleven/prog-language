@@ -28,6 +28,11 @@ match args[2]:
         display_CST(content)
     case "tokens":
         print(string_to_tokens(content))
+    case "debug":
+        interp(content)
+        print("Environment:")
+        print(get_glob_env())
+        print(get_refs())
     case "all":
         print(string_to_tokens(content))
         display_CST(content)

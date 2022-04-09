@@ -54,7 +54,10 @@ tk_ids = [
     "append",
     "print",
     "pop",
-    "push"
+    "push",
+    "newref",
+    "setref",
+    "deref"
 ]
 
 class Token:

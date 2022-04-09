@@ -32,6 +32,8 @@ THIS IS WHERE YOU ADD FUNCTIONS IMPLEMENTED IN PARSER/ABSTREE/LEXER
 
 env = empty_env()
 
+g_store = Store()
+
 def eval_expr(exp):
     global env
     match exp.id:
@@ -180,6 +182,25 @@ def eval_expr(exp):
             (e) = exp.vals
             v = eval_expr(e)
             print(result(v))
+        case "NewRef":
+            (e) = exp.vals
+            v = eval_expr(e)
+            ref_expr = {"NUMBER": len(g_store.ls)}
+            g_store.newref(e)
+            ans = expr_cls("Ref", expr(ref_expr), f"Ref({est(ref_expr)})")
+            return return_exp(ans)
+        case "DeRef":
+            (e) = exp.vals
+            v = pass_eval(e, int_of_Ref)
+            ans = g_store.deref(v.vals)
+            return eval_expr(ans)
+        case "SetRef":
+            (e1, e2) = exp.vals
+            v1 = pass_eval(e1, int_of_Ref)
+            v2 = return_val(eval_expr(e2))
+            g_store.setref(v1.vals, v2)
+            ans = expr_cls("Unit", "", "Unit()")
+            return 1
         case _:
             ret_error("Not implemented")
 
@@ -205,6 +226,10 @@ def interp(s):
 
 def get_glob_env():
     global env
-    return env
+    return return_val(env).str
+
+def get_refs():
+    global g_store
+    return g_store
 
 

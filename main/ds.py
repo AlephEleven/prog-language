@@ -95,6 +95,13 @@ def int_of_Int(exp):
         case _:
             raise Exception("Expected an Int!")
 
+def int_of_Ref(exp):
+    match exp.id:
+        case "Ref":
+            return exp
+        case _:
+            return Exception("Expected a Ref!")
+
 def bool_of_Bool(exp):
     match exp.id:
         case "Bool":
@@ -111,3 +118,28 @@ def arr_of_Arr(exp):
 
 def update_arr(ans):
     return expr_cls("Arr", [ele for ele in ans], f"Arr({[est_no_expr(ele) for ele in ans]})")
+
+
+# Store
+
+class Store:
+
+    def __init__(self):
+        self.ls = []
+
+    def newref(self, val):
+        self.ls += [val]
+
+    def deref(self, i):
+        return self.ls[i]
+
+    def setref(self, i, val):
+        self.ls[i] = val
+        return val
+
+    def __str__(self):
+        print("Store:")
+        for indx, i in enumerate(self.ls):
+            prnt = return_val(i).str if isinstance(return_val(i), type) else return_val(i)
+            print(f"{indx}->{prnt}")
+        return ""
