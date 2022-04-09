@@ -36,6 +36,8 @@ Concrete Syntax:
 <Exp> ::= pop(<Exp>)
 <Exp> ::= push(<Exp>, <Exp>)
 
+<Exp> ::= newref(<Exp>) | deref(<Exp>) | setref(<Exp>, <Exp>)
+
 <Exp> ::= print(<Exp>)
 
 bool = true | false
